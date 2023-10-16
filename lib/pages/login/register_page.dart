@@ -1,7 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/error/error_handling.dart';
-import 'package:playpal/pages/register_additional.dart';
+import 'package:playpal/pages/login/register_additional.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

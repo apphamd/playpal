@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/error/error_handling.dart';
-import 'package:playpal/pages/auth_page.dart';
-import 'package:playpal/pages/nav_frame.dart';
+import 'package:playpal/pages/login/auth_page.dart';
+import 'package:playpal/pages/navigation/nav_frame.dart';
 
 class RegisterAdditionalPage extends StatefulWidget {
   final String firstName;

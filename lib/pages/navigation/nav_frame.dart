@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/pages/home_feed.dart';
-import 'package:playpal/pages/user_profile_page.dart';
+import 'package:playpal/pages/home/home_feed.dart';
+import 'package:playpal/pages/profile/user_profile_page.dart';
 
 class NavigationFrame extends StatefulWidget {
   const NavigationFrame({super.key});
