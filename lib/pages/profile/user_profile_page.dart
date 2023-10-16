@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/pages/dog_profile_page.dart';
+import 'package:playpal/pages/profile/dog_profile_page.dart';
 
 class CurrentUserProfilePage extends StatefulWidget {
   const CurrentUserProfilePage(
