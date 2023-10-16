@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/pages/user_profile_page.dart';
+import 'package:playpal/pages/profile/user_profile_page.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});

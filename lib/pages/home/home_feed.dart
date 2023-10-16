@@ -181,6 +181,7 @@ class _HomeFeedState extends State<HomeFeed> {
               ),
             ],
           ),
+          const Text('Filtered Dogs'),
           Expanded(
             child: ListView.builder(
               itemCount: _queriedDogs.length,
