@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
-import 'package:playpal/pages/home_feed.dart';
-import 'package:playpal/pages/user_profile_page.dart';
+import 'package:playpal/pages/home/home_feed.dart';
+import 'package:playpal/pages/home/home_feed_mock.dart';
+import 'package:playpal/pages/profile/user_profile_page.dart';
+import 'package:playpal/models/user_models.dart';
 
 class NavigationFrame extends StatefulWidget {
   const NavigationFrame({super.key});
@@ -14,19 +16,17 @@ class NavigationFrame extends StatefulWidget {
 class _NavigationFrameState extends State<NavigationFrame> {
   final userAuth = FirebaseAuth.instance.currentUser!;
   final db = FirebaseFirestore.instance;
-  Map<String, dynamic>? _userData = {};
+  User? _currentUser;
 
   int currentPageIndex = 0;
 
   Future getCurrentUserData() async {
-    Map<String, dynamic>? userData;
     await db.collection('users').doc(userAuth.uid).get().then((docSnapshot) {
-      userData = docSnapshot.data();
+      User currentUser = User.fromFirestore(docSnapshot);
+      setState(() {
+        _currentUser = currentUser;
+      });
     });
-    setState(() {
-      _userData = userData;
-    });
-    debugPrint('User Data: $_userData');
   }
 
   @override
@@ -37,6 +37,9 @@ class _NavigationFrameState extends State<NavigationFrame> {
 
   @override
   Widget build(BuildContext context) {
+    if (_currentUser?.userId == null) {
+      return const Text('loading...');
+    }
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -68,7 +71,7 @@ class _NavigationFrameState extends State<NavigationFrame> {
         Container(
           color: Colors.blue,
           alignment: Alignment.center,
-          child: const HomeFeed(),
+          child: HomeFeed(user: _currentUser!),
         ),
         Container(
           color: Colors.green,
@@ -78,8 +81,7 @@ class _NavigationFrameState extends State<NavigationFrame> {
         Container(
           alignment: Alignment.center,
           child: CurrentUserProfilePage(
-            currentUserData: _userData!,
-            currentUserId: userAuth.uid,
+            currentUser: _currentUser!,
           ),
         ),
       ][currentPageIndex],

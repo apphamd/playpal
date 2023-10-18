@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:playpal/crud/enum/enum.dart';
 import 'package:playpal/crud/query/filter_dogs.dart';
 
-class HomeFeed extends StatefulWidget {
-  const HomeFeed({super.key});
+class HomeFeedMock extends StatefulWidget {
+  const HomeFeedMock({super.key});
 
   @override
-  State<HomeFeed> createState() => _HomeFeedState();
+  State<HomeFeedMock> createState() => _HomeFeedMockState();
 }
 
-class _HomeFeedState extends State<HomeFeed> {
+class _HomeFeedMockState extends State<HomeFeedMock> {
   final db = FirebaseFirestore.instance.collection('dogs');
 
   List _allDogs = [];
@@ -181,6 +181,7 @@ class _HomeFeedState extends State<HomeFeed> {
               ),
             ],
           ),
+          const Text('Filtered Dogs'),
           Expanded(
             child: ListView.builder(
               itemCount: _queriedDogs.length,
