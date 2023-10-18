@@ -8,6 +8,7 @@ class Dog {
   final String state;
   final int weight;
   final String ownerId;
+  final String dogId;
 
   const Dog({
     required this.name,
@@ -17,6 +18,7 @@ class Dog {
     required this.state,
     required this.weight,
     required this.ownerId,
+    required this.dogId,
   });
 
   factory Dog.fromFirestore(
@@ -31,6 +33,7 @@ class Dog {
       state: data['state'],
       weight: data['weight'],
       ownerId: data['owner_id'],
+      dogId: snapshot.id,
     );
   }
 }
