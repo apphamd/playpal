@@ -7,6 +7,7 @@ class Dog {
   final String city;
   final String state;
   final int weight;
+  final List? likes;
   final String ownerId;
   final String dogId;
 
@@ -17,6 +18,7 @@ class Dog {
     required this.city,
     required this.state,
     required this.weight,
+    required this.likes,
     required this.ownerId,
     required this.dogId,
   });
@@ -32,6 +34,7 @@ class Dog {
       city: data['city'],
       state: data['state'],
       weight: data['weight'],
+      likes: data['likes'],
       ownerId: data['owner_id'],
       dogId: snapshot.id,
     );
