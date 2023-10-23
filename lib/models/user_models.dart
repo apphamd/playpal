@@ -5,6 +5,7 @@ class User {
   final String lastName;
   final String city;
   final String state;
+  final List? likes;
   final String userId;
 
   const User({
@@ -12,6 +13,7 @@ class User {
     required this.lastName,
     required this.city,
     required this.state,
+    required this.likes,
     required this.userId,
   });
 
@@ -24,6 +26,7 @@ class User {
       lastName: data?['l_name'],
       city: data?['city'],
       state: data?['state'],
+      likes: data?['likes'],
       userId: snapshot.id,
     );
   }
