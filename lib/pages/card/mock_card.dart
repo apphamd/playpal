@@ -48,18 +48,42 @@ class _DogMockCardState extends State<DogMockCard> {
 
     DocumentReference dogRef =
         FirebaseFirestore.instance.collection('dogs').doc(widget.dog.dogId);
+    DocumentReference dogOwnerRef =
+        FirebaseFirestore.instance.collection('users').doc(widget.dog.ownerId);
 
     // if user likes dog, add userId to 'likes' array of dog
     if (isLiked) {
       dogRef.update({
         'likes': FieldValue.arrayUnion([widget.currentUser.userId])
       });
+      dogOwnerRef.update({
+        'likes': FieldValue.arrayUnion([
+          {'user': widget.currentUser.userId, 'dog': widget.dog.dogId}
+        ])
+      });
+      checkLikes();
     }
     // else remove the userId from 'likes'
     else {
       dogRef.update({
         'likes': FieldValue.arrayRemove([widget.currentUser.userId])
       });
+      dogOwnerRef.update({
+        'likes': FieldValue.arrayRemove([
+          {'user': widget.currentUser.userId, 'dog': widget.dog.dogId}
+        ])
+      });
+    }
+  }
+
+  void checkLikes() {
+    for (var map in widget.currentUser.likes!) {
+      var dog = map['dog'];
+      var user = map['user'];
+      print('UserID: $user \t DogID: $dog');
+      if (widget.dog.ownerId == user) {
+        print('Congratulations! You found a pal!');
+      }
     }
   }
 
