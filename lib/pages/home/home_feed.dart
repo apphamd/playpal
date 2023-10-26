@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/models/dog_models.dart';
-import 'package:playpal/models/user_models.dart';
+import 'package:playpal/models/dog_model.dart';
+import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/card/mock_card.dart';
 
 class HomeFeed extends StatefulWidget {
   const HomeFeed({super.key, required this.user});
-  final User user;
+  final UserModel user;
 
   @override
   State<HomeFeed> createState() => _HomeFeedState();
@@ -20,17 +20,17 @@ class _HomeFeedState extends State<HomeFeed> {
   var db = FirebaseFirestore.instance;
 
   // Feed lists
-  List<Dog> _allDogs = [];
-  List<Dog> _queriedDogs = [];
+  List<DogModel> _allDogs = [];
+  List<DogModel> _queriedDogs = [];
 
   // user
-  late User _currentUser;
+  late UserModel _currentUser;
 
   getAllDogs() async {
-    List<Dog> allDogs = [];
+    List<DogModel> allDogs = [];
     await db.collection('dogs').get().then((snapshot) {
       for (var document in snapshot.docs) {
-        var dog = Dog.fromFirestore(document);
+        var dog = DogModel.fromFirestore(document);
         if (dog.ownerId != _currentUser.userId &&
             dog.city == _currentUser.city &&
             dog.state == _currentUser.state) {

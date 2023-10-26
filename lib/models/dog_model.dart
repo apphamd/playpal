@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Dog {
+class DogModel {
   final String name;
   final String breed;
   final String energyLevel;
@@ -11,7 +11,7 @@ class Dog {
   final String ownerId;
   final String dogId;
 
-  const Dog({
+  const DogModel({
     required this.name,
     required this.breed,
     required this.energyLevel,
@@ -23,11 +23,11 @@ class Dog {
     required this.dogId,
   });
 
-  factory Dog.fromFirestore(
+  factory DogModel.fromFirestore(
     QueryDocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
     final data = snapshot.data();
-    return Dog(
+    return DogModel(
       name: data['f_name'],
       breed: data['breed'],
       energyLevel: data['energy_level'],

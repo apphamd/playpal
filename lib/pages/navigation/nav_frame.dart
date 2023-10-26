@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:playpal/pages/chat/conversations_page.dart';
 import 'package:playpal/pages/home/home_feed.dart';
 import 'package:playpal/pages/home/home_feed_mock.dart';
 import 'package:playpal/pages/profile/user_profile_page.dart';
-import 'package:playpal/models/user_models.dart';
+import 'package:playpal/models/user_model.dart';
 
 class NavigationFrame extends StatefulWidget {
   const NavigationFrame({super.key});
@@ -16,13 +17,13 @@ class NavigationFrame extends StatefulWidget {
 class _NavigationFrameState extends State<NavigationFrame> {
   final userAuth = FirebaseAuth.instance.currentUser!;
   final db = FirebaseFirestore.instance;
-  User? _currentUser;
+  UserModel? _currentUser;
 
   int currentPageIndex = 0;
 
   Future getCurrentUserData() async {
     await db.collection('users').doc(userAuth.uid).get().then((docSnapshot) {
-      User currentUser = User.fromFirestore(docSnapshot);
+      UserModel currentUser = UserModel.fromFirestore(docSnapshot);
       setState(() {
         _currentUser = currentUser;
       });
@@ -76,7 +77,9 @@ class _NavigationFrameState extends State<NavigationFrame> {
         Container(
           color: Colors.green,
           alignment: Alignment.center,
-          child: const Text('Page 2'),
+          child: ConversationsPage(
+            currentUser: _currentUser!,
+          ),
         ),
         Container(
           alignment: Alignment.center,
