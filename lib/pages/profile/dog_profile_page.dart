@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/models/dog_models.dart';
+import 'package:playpal/models/dog_model.dart';
 
 class DogProfilePage extends StatelessWidget {
   const DogProfilePage({super.key, required this.dog});
-  final Dog? dog;
+  final DogModel? dog;
 
   @override
   Widget build(BuildContext context) {
