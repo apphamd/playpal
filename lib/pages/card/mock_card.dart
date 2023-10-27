@@ -4,6 +4,7 @@ import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/card/horizontal_mock_card.dart';
 import 'package:playpal/pages/components/like_button.dart';
+import 'package:playpal/pages/screens/match_screen.dart';
 
 class MockCard extends StatelessWidget {
   const MockCard({super.key, required this.color});
@@ -83,6 +84,14 @@ class _DogMockCardState extends State<DogMockCard> {
       print('UserID: $user \t DogID: $dog');
       if (widget.dog.ownerId == user) {
         print('Congratulations! You found a pal!');
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return MatchScreen(
+              currentUser: widget.currentUser,
+              matchedUserId: user,
+            );
+          },
+        ));
       }
     }
   }
