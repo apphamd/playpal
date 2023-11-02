@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:playpal/crud/message_crud.dart';
+import 'package:playpal/crud/message_service.dart';
 import 'package:playpal/models/message_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/chat/message_bubble.dart';

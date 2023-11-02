@@ -58,6 +58,7 @@ class DogModel {
       "weight": weight,
       "age": age,
       "ageTimespan": ageTimespan,
+      "likes": likes,
       "owner_id": ownerId,
     };
   }

@@ -84,6 +84,18 @@ class _DogMockCardState extends State<DogMockCard> {
       print('UserID: $user \t DogID: $dog');
       if (widget.dog.ownerId == user) {
         print('Congratulations! You found a pal!');
+
+        DocumentReference currentUserRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(widget.currentUser.userId)
+            .collection('matches')
+            .doc();
+
+        currentUserRef.set({
+          'matched_user_id': widget.dog.ownerId,
+          'dog_id': widget.dog.dogId
+        });
+
         Navigator.push(context, MaterialPageRoute(
           builder: (context) {
             return MatchScreen(
