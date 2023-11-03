@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:playpal/crud/message_service.dart';
+import 'package:playpal/service/message_service.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/chat/chat_text_form_field.dart';
 

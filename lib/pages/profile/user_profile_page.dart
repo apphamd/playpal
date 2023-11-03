@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:playpal/crud/create/add_dog.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
+import 'package:playpal/pages/components/user_avatar_picker.dart';
 import 'package:playpal/pages/profile/dog_profile_page.dart';
 
 class CurrentUserProfilePage extends StatefulWidget {
@@ -40,49 +41,67 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(onPressed: userSignOut, icon: const Icon(Icons.logout))
-        ],
+        elevation: 0,
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
+        centerTitle: false,
         title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${widget.currentUser.firstName} ${widget.currentUser.lastName} ',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${widget.currentUser.firstName} ${widget.currentUser.lastName}',
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                // const Spacer(),
+                IconButton(
+                    onPressed: userSignOut,
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.black,
+                    ))
+              ],
             ),
-            const SizedBox(height: 5),
             Text(
-              '${widget.currentUser.city}, ${widget.currentUser.state}',
+              '\t${widget.currentUser.city}, ${widget.currentUser.state}',
               style: const TextStyle(
                 fontSize: 14,
+                color: Colors.black,
               ),
             ),
-            const SizedBox(height: 10),
           ],
         ),
       ),
       body: Stack(
         children: [
-          // "your dogs"
           Container(
-            padding: EdgeInsets.only(top: 20),
             alignment: Alignment.topCenter,
-            child: const Text(
-              'Your dogs',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            padding: const EdgeInsets.only(top: 20),
+            child: UserAvatarPicker(
+              currentUser: widget.currentUser,
             ),
           ),
 
           // list of dogs
           // TODO: turn this into a instagram like card system
           Container(
-            padding: EdgeInsets.only(top: 50),
+            padding: const EdgeInsets.only(top: 180),
             child: FutureBuilder(
               future: getDogs(),
               builder: ((context, snapshot) {
-                if (_userDogs.isEmpty) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
+                }
+                if (_userDogs.isEmpty) {
+                  return const Center(
+                    child: Text('Uh oh, where are your buddies at?'),
+                  );
                 }
                 return Column(
                   children: [
