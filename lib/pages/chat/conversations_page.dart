@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/crud/user_service.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/chat/chat_page.dart';
+import 'package:playpal/pages/components/user_avatar.dart';
 
 class ConversationsPage extends StatefulWidget {
   const ConversationsPage({
@@ -16,8 +16,6 @@ class ConversationsPage extends StatefulWidget {
 }
 
 class _ConversationsPageState extends State<ConversationsPage> {
-  List _matches = [];
-
   @override
   void initState() {
     super.initState();
@@ -87,12 +85,18 @@ class _ConversationsPageState extends State<ConversationsPage> {
                         // the user listed on the card
                         return Card(
                           child: ListTile(
-                            minVerticalPadding: 40,
-                            leading: const Icon(Icons.account_circle_outlined,
-                                size: 60),
-                            minLeadingWidth: 8,
-                            title: Text(
-                                '${matchedUsersList[index].firstName} ${matchedUsersList[index].lastName}'),
+                            contentPadding:
+                                const EdgeInsets.only(top: 10, bottom: 20),
+                            // minVerticalPadding: 40,
+                            leading: UserAvatar(
+                              userId: matchedUsersList[index].userId,
+                              radius: 30.0,
+                            ),
+                            horizontalTitleGap: 0,
+                            title: Text('${matchedUsersList[index].firstName} '
+                                '${matchedUsersList[index].lastName}'),
+                            subtitle: Text('${matchedUsersList[index].city}, '
+                                '${matchedUsersList[index].state}'),
                             onTap: () {
                               Navigator.push(
                                 context,

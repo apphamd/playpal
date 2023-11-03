@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
-import 'package:playpal/pages/card/mock_card.dart';
+import 'package:playpal/pages/card/dog_card.dart';
 
 class HomeFeed extends StatefulWidget {
   const HomeFeed({super.key, required this.user});
@@ -79,7 +79,7 @@ class _HomeFeedState extends State<HomeFeed> {
         controller: _pageController,
         itemCount: _allDogs.length,
         itemBuilder: (context, index) {
-          return DogMockCard(
+          return DogCardPage(
             dog: _allDogs[index],
             currentUser: _currentUser,
           );

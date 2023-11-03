@@ -4,6 +4,7 @@ import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/card/horizontal_mock_card.dart';
 import 'package:playpal/pages/components/like_button.dart';
+import 'package:playpal/pages/components/user_avatar.dart';
 import 'package:playpal/pages/screens/match_screen.dart';
 
 class MockCard extends StatelessWidget {
@@ -26,8 +27,8 @@ class MockCard extends StatelessWidget {
   }
 }
 
-class DogMockCard extends StatefulWidget {
-  const DogMockCard({
+class DogCardPage extends StatefulWidget {
+  const DogCardPage({
     super.key,
     required this.dog,
     required this.currentUser,
@@ -36,10 +37,10 @@ class DogMockCard extends StatefulWidget {
   final UserModel currentUser;
 
   @override
-  State<DogMockCard> createState() => _DogMockCardState();
+  State<DogCardPage> createState() => _DogCardPageState();
 }
 
-class _DogMockCardState extends State<DogMockCard> {
+class _DogCardPageState extends State<DogCardPage> {
   bool isLiked = false;
 
   void toggleLike() {
@@ -131,6 +132,7 @@ class _DogMockCardState extends State<DogMockCard> {
                 decoration: const BoxDecoration(color: Colors.lightBlue),
               ),
 
+              // More menu
               Container(
                 alignment: Alignment.topRight,
                 padding: const EdgeInsets.only(
@@ -163,9 +165,13 @@ class _DogMockCardState extends State<DogMockCard> {
                 child: Container(
                   padding: const EdgeInsets.only(top: 10.0, right: 20.0),
                   alignment: Alignment.topRight,
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 35.0,
+                  child: Stack(
+                    children: <Widget>[
+                      UserAvatar(
+                        userId: widget.dog.ownerId,
+                        radius: 35.0,
+                      ),
+                    ],
                   ),
                 ),
               ),

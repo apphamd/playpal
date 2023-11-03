@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:playpal/crud/dog_service.dart';
+import 'package:playpal/service/dog_service.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 
