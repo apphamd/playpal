@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
-import 'package:playpal/crud/create/add_dog.dart';
+import 'package:playpal/pages/profile/add_dog_page.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/components/user_avatar_picker.dart';
@@ -45,6 +45,15 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
         toolbarHeight: 100,
         backgroundColor: Colors.transparent,
         centerTitle: false,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.black45, Colors.white10],
+            ),
+          ),
+        ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -99,12 +108,43 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (_userDogs.isEmpty) {
-                  return const Center(
-                    child: Text('Uh oh, where are your buddies at?'),
+                  return Column(
+                    children: [
+                      const SizedBox(height: 50),
+                      const Center(
+                          child: Text('Uh oh, where are your buddies at?')),
+                      const SizedBox(height: 50),
+                      Container(
+                        alignment: Alignment.center,
+                        width: 45,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.indigoAccent.shade400, width: 3),
+                          color: Colors.blue,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          color: Colors.white,
+                          iconSize: 20,
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddDogPage(user: widget.currentUser),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 }
                 return Column(
                   children: [
+                    const SizedBox(height: 10),
                     ListView.builder(
                       shrinkWrap: true,
                       itemCount: _userDogs.length,
@@ -117,6 +157,7 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DogProfilePage(
+                                      owner: widget.currentUser,
                                       dog: DogModel.fromFirestore(
                                           _userDogs[index])),
                                 ),
@@ -126,7 +167,9 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                         );
                       },
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
+
+                    // add dog button
                     Container(
                       alignment: Alignment.center,
                       width: 45,
@@ -146,7 +189,7 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  AddDog(user: widget.currentUser),
+                                  AddDogPage(user: widget.currentUser),
                             ),
                           );
                         },

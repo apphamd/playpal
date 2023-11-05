@@ -31,7 +31,25 @@ class _ConversationsPageState extends State<ConversationsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages'),
+        elevation: 0,
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
+        centerTitle: false,
+        leadingWidth: 30.0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.black45, Colors.white10],
+            ),
+          ),
+        ),
+        title: const Text(
+          'Messages',
+          style: TextStyle(
+              color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+        ),
       ),
       body: StreamBuilder(
         stream: matchesDb.snapshots(includeMetadataChanges: true),
@@ -66,6 +84,7 @@ class _ConversationsPageState extends State<ConversationsPage> {
                   List<UserModel> matchedUsersList = [];
                   for (var doc in snapshot.data!.docs) {
                     for (var id in matchIdList) {
+                      print(doc.data());
                       UserModel user = UserModel.fromFirestore(doc);
                       if (id == doc.id && !matchedUsersList.contains(user)) {
                         matchedUsersList.add(user);
