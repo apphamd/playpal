@@ -72,6 +72,15 @@ class _HomeFeedState extends State<HomeFeed> {
             padding: EdgeInsets.only(left: 6.0),
             child: Icon(Icons.filter_alt, size: 30.0),
           ),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.black38, Colors.transparent],
+              ),
+            ),
+          ),
         ),
       ),
       body: PageView.builder(
