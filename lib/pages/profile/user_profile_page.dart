@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
-import 'package:playpal/models/dog_models.dart';
-import 'package:playpal/models/user_models.dart';
+import 'package:playpal/pages/profile/add_dog_page.dart';
+import 'package:playpal/models/dog_model.dart';
+import 'package:playpal/models/user_model.dart';
+import 'package:playpal/pages/components/user_avatar_picker.dart';
 import 'package:playpal/pages/profile/dog_profile_page.dart';
 
 class CurrentUserProfilePage extends StatefulWidget {
   const CurrentUserProfilePage({super.key, required this.currentUser});
-  final User currentUser;
+  final UserModel currentUser;
 
   @override
   State<CurrentUserProfilePage> createState() => _CurrentUserProfilePageState();
@@ -39,68 +41,165 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(onPressed: userSignOut, icon: const Icon(Icons.logout))
-        ],
-        title: Column(
-          children: [
-            Text(
-              '${widget.currentUser.firstName} ${widget.currentUser.lastName} ',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+        elevation: 0,
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
+        centerTitle: false,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.black45, Colors.white10],
             ),
-            const SizedBox(height: 5),
+          ),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${widget.currentUser.firstName} ${widget.currentUser.lastName}',
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                // const Spacer(),
+                IconButton(
+                    onPressed: userSignOut,
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.black,
+                    ))
+              ],
+            ),
             Text(
-              '${widget.currentUser.city}, ${widget.currentUser.state}',
+              '\t${widget.currentUser.city}, ${widget.currentUser.state}',
               style: const TextStyle(
                 fontSize: 14,
+                color: Colors.black,
               ),
             ),
-            const SizedBox(height: 10),
           ],
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 15),
-            child: Center(
-              child: Text(
-                'Your dogs',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
+          Container(
+            alignment: Alignment.topCenter,
+            padding: const EdgeInsets.only(top: 20),
+            child: UserAvatarPicker(
+              currentUser: widget.currentUser,
             ),
           ),
-          Flexible(
+
+          // list of dogs
+          // TODO: turn this into a instagram like card system
+          Container(
+            padding: const EdgeInsets.only(top: 180),
             child: FutureBuilder(
               future: getDogs(),
               builder: ((context, snapshot) {
-                if (_userDogs.isEmpty) {
-                  return const CircularProgressIndicator();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
                 }
-                return ListView.builder(
-                  itemCount: _userDogs.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: ListTile(
-                        title: Text(_userDogs[index]['f_name']),
-                        onTap: () {
+                if (_userDogs.isEmpty) {
+                  return Column(
+                    children: [
+                      const SizedBox(height: 50),
+                      const Center(
+                          child: Text('Uh oh, where are your buddies at?')),
+                      const SizedBox(height: 50),
+                      Container(
+                        alignment: Alignment.center,
+                        width: 45,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.indigoAccent.shade400, width: 3),
+                          color: Colors.blue,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          color: Colors.white,
+                          iconSize: 20,
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddDogPage(user: widget.currentUser),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _userDogs.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: ListTile(
+                            title: Text(_userDogs[index]['f_name']),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DogProfilePage(
+                                      owner: widget.currentUser,
+                                      dog: DogModel.fromFirestore(
+                                          _userDogs[index])),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+
+                    // add dog button
+                    Container(
+                      alignment: Alignment.center,
+                      width: 45,
+                      height: 45,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: Colors.indigoAccent.shade400, width: 3),
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        color: Colors.white,
+                        iconSize: 20,
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DogProfilePage(
-                                  dog: Dog.fromFirestore(_userDogs[index])),
+                              builder: (context) =>
+                                  AddDogPage(user: widget.currentUser),
                             ),
                           );
                         },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 );
               }),
             ),
-          )
+          ),
         ],
       ),
     );

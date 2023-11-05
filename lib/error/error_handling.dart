@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ErrorHandling extends StatelessWidget {
-  const ErrorHandling({super.key});
+class ErrorHandling {
+  const ErrorHandling();
 
   static void showError(BuildContext context, String errorMsg) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -9,10 +9,5 @@ class ErrorHandling extends StatelessWidget {
         content: Text(errorMsg),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }

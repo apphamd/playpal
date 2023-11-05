@@ -1,29 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class UserModel {
   final String firstName;
   final String lastName;
   final String city;
   final String state;
+  final List? likes;
   final String userId;
 
-  const User({
+  const UserModel({
     required this.firstName,
     required this.lastName,
     required this.city,
     required this.state,
+    required this.likes,
     required this.userId,
   });
 
-  factory User.fromFirestore(
+  factory UserModel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
     final data = snapshot.data();
-    return User(
+    return UserModel(
       firstName: data?['f_name'],
       lastName: data?['l_name'],
       city: data?['city'],
       state: data?['state'],
+      likes: data?['likes'],
       userId: snapshot.id,
     );
   }

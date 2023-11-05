@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/models/dog_models.dart';
-import 'package:playpal/models/user_models.dart';
+import 'package:playpal/models/dog_model.dart';
+import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/card/horizontal_mock_card.dart';
 import 'package:playpal/pages/components/like_button.dart';
+import 'package:playpal/pages/components/user_avatar.dart';
+import 'package:playpal/pages/screens/match_screen.dart';
 
 class MockCard extends StatelessWidget {
   const MockCard({super.key, required this.color});
@@ -25,20 +27,20 @@ class MockCard extends StatelessWidget {
   }
 }
 
-class DogMockCard extends StatefulWidget {
-  const DogMockCard({
+class DogCardPage extends StatefulWidget {
+  const DogCardPage({
     super.key,
     required this.dog,
     required this.currentUser,
   });
-  final Dog dog;
-  final User currentUser;
+  final DogModel dog;
+  final UserModel currentUser;
 
   @override
-  State<DogMockCard> createState() => _DogMockCardState();
+  State<DogCardPage> createState() => _DogCardPageState();
 }
 
-class _DogMockCardState extends State<DogMockCard> {
+class _DogCardPageState extends State<DogCardPage> {
   bool isLiked = false;
 
   void toggleLike() {
@@ -48,18 +50,62 @@ class _DogMockCardState extends State<DogMockCard> {
 
     DocumentReference dogRef =
         FirebaseFirestore.instance.collection('dogs').doc(widget.dog.dogId);
+    DocumentReference dogOwnerRef =
+        FirebaseFirestore.instance.collection('users').doc(widget.dog.ownerId);
 
     // if user likes dog, add userId to 'likes' array of dog
     if (isLiked) {
       dogRef.update({
         'likes': FieldValue.arrayUnion([widget.currentUser.userId])
       });
+      dogOwnerRef.update({
+        'likes': FieldValue.arrayUnion([
+          {'user': widget.currentUser.userId, 'dog': widget.dog.dogId}
+        ])
+      });
+      checkLikes();
     }
     // else remove the userId from 'likes'
     else {
       dogRef.update({
         'likes': FieldValue.arrayRemove([widget.currentUser.userId])
       });
+      dogOwnerRef.update({
+        'likes': FieldValue.arrayRemove([
+          {'user': widget.currentUser.userId, 'dog': widget.dog.dogId}
+        ])
+      });
+    }
+  }
+
+  void checkLikes() {
+    for (var map in widget.currentUser.likes!) {
+      var dog = map['dog'];
+      var user = map['user'];
+      print('UserID: $user \t DogID: $dog');
+      if (widget.dog.ownerId == user) {
+        print('Congratulations! You found a pal!');
+
+        DocumentReference currentUserRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(widget.currentUser.userId)
+            .collection('matches')
+            .doc();
+
+        currentUserRef.set({
+          'matched_user_id': widget.dog.ownerId,
+          'dog_id': widget.dog.dogId
+        });
+
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return MatchScreen(
+              currentUser: widget.currentUser,
+              matchedUserId: user,
+            );
+          },
+        ));
+      }
     }
   }
 
@@ -86,6 +132,7 @@ class _DogMockCardState extends State<DogMockCard> {
                 decoration: const BoxDecoration(color: Colors.lightBlue),
               ),
 
+              // More menu
               Container(
                 alignment: Alignment.topRight,
                 padding: const EdgeInsets.only(
@@ -118,9 +165,13 @@ class _DogMockCardState extends State<DogMockCard> {
                 child: Container(
                   padding: const EdgeInsets.only(top: 10.0, right: 20.0),
                   alignment: Alignment.topRight,
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 35.0,
+                  child: Stack(
+                    children: <Widget>[
+                      UserAvatar(
+                        userId: widget.dog.ownerId,
+                        radius: 35.0,
+                      ),
+                    ],
                   ),
                 ),
               ),
