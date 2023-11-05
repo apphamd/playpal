@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/chat/chat_page.dart';
-import 'package:playpal/pages/components/user_avatar.dart';
+import 'package:playpal/pages/components/profile/user_avatar.dart';
 
 class ConversationsPage extends StatefulWidget {
   const ConversationsPage({

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:playpal/pages/profile/add_dog_page.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
-import 'package:playpal/pages/components/user_avatar_picker.dart';
+import 'package:playpal/pages/components/profile/user_avatar_picker.dart';
 import 'package:playpal/pages/profile/dog_profile_page.dart';
 
 class CurrentUserProfilePage extends StatefulWidget {
