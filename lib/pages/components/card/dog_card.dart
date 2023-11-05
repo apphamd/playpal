@@ -128,8 +128,48 @@ class _DogCardPageState extends State<DogCardPage> {
           child: Stack(
             children: [
               // Card Image
-              Container(
-                decoration: const BoxDecoration(color: Colors.lightBlue),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('dogs')
+                    .doc(widget.dog.dogId)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  Map dogData = snapshot.data!.data() as Map;
+                  if (dogData['profile_pic'] != null) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        image: DecorationImage(
+                          image: NetworkImage(dogData['profile_pic']),
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.amber,
+                      ),
+                    );
+                  }
+
+                  // return profilePic.isNotEmpty
+                  //     ? Container(
+                  //         decoration: BoxDecoration(
+                  //             color: Colors.lightBlue,
+                  //             image: DecorationImage(
+                  //                 image: NetworkImage(profilePic))),
+                  //       )
+                  //     : Container(
+                  //         decoration: const BoxDecoration(
+                  //           color: Colors.lightBlue,
+                  //         ),
+                  //       );
+                },
               ),
 
               // More menu
