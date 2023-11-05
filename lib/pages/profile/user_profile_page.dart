@@ -58,7 +58,6 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '${widget.currentUser.firstName} ${widget.currentUser.lastName}',
@@ -68,13 +67,19 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                     color: Colors.black,
                   ),
                 ),
-                // const Spacer(),
+                const Spacer(),
                 IconButton(
-                    onPressed: userSignOut,
-                    icon: const Icon(
-                      Icons.logout,
-                      color: Colors.black,
-                    ))
+                  onPressed: () {},
+                  icon: const Icon(Icons.more_horiz),
+                  color: Colors.black,
+                ),
+                IconButton(
+                  onPressed: userSignOut,
+                  icon: const Icon(
+                    Icons.logout,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
             Text(
