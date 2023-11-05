@@ -29,4 +29,30 @@ class DogService {
     );
     db.collection('dogs').add(dogToAdd.toFirestore());
   }
+
+  void updateDog(
+    String dogId,
+    UserModel user,
+    String name,
+    String breed,
+    String energyLevel,
+    int weight,
+    int age,
+    String ageTimespan,
+  ) {
+    DogModel dogToAdd = DogModel(
+      name: name,
+      breed: breed,
+      energyLevel: energyLevel,
+      city: user.city,
+      state: user.state,
+      weight: weight,
+      age: age,
+      ageTimespan: ageTimespan,
+      likes: [],
+      ownerId: user.userId,
+      dogId: dogId,
+    );
+    db.collection('dogs').doc(dogId).set(dogToAdd.toFirestore());
+  }
 }

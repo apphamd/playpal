@@ -3,36 +3,36 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/service/image_service.dart';
-import 'package:playpal/models/user_model.dart';
 
-class UserAvatarPicker extends StatefulWidget {
-  const UserAvatarPicker({
+class DogProfileImagePicker extends StatefulWidget {
+  const DogProfileImagePicker({
     super.key,
-    required this.currentUser,
+    required this.dog,
   });
-  final UserModel currentUser;
+  final DogModel dog;
 
   @override
-  State<UserAvatarPicker> createState() => _UserAvatarPickerState();
+  State<DogProfileImagePicker> createState() => _DogProfileImagePickerState();
 }
 
-class _UserAvatarPickerState extends State<UserAvatarPicker> {
+class _DogProfileImagePickerState extends State<DogProfileImagePicker> {
   Uint8List? _image;
-  Map<String, dynamic> userData = {};
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  Map<String, dynamic> dogData = {};
+  CollectionReference dogs = FirebaseFirestore.instance.collection('dogs');
 
   void selectImage() async {
     Uint8List image = await ImageService.pickImage(ImageSource.gallery);
     setState(() {
       _image = image;
     });
-    saveProfilePicture();
+    saveDogProfilePicture();
   }
 
-  void saveProfilePicture() async {
-    await ImageService.saveUserProfilePicData(
-      userId: widget.currentUser.userId,
+  void saveDogProfilePicture() async {
+    await ImageService.saveDogProfilePicData(
+      dogId: widget.dog.dogId,
       file: _image!,
     );
   }
@@ -40,24 +40,24 @@ class _UserAvatarPickerState extends State<UserAvatarPicker> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: users.snapshots(),
+        stream: dogs.snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
-              child: Text('An error has occured ${snapshot.error}'),
+              child: Text('An error has occurred ${snapshot.error}'),
             );
           }
-          var currentUser;
+          Map currentDog = {};
           String profilePic = '';
           if (snapshot.hasData) {
-            for (var user in snapshot.data!.docs) {
-              if (widget.currentUser.userId == user.id) {
-                currentUser = user.data() as Map;
+            for (var dog in snapshot.data!.docs) {
+              if (widget.dog.dogId == dog.id) {
+                currentDog = dog.data() as Map;
               }
             }
-            currentUser['profile_pic'] == null
+            currentDog['profile_pic'] == null
                 ? ()
-                : profilePic = currentUser['profile_pic'];
+                : profilePic = currentDog['profile_pic'];
           }
 
           return Stack(

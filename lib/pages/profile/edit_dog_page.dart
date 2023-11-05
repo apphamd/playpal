@@ -3,15 +3,20 @@ import 'package:playpal/service/dog_service.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 
-class AddDog extends StatefulWidget {
-  AddDog({super.key, required this.user});
+class EditDogPage extends StatefulWidget {
+  EditDogPage({
+    super.key,
+    required this.user,
+    required this.dog,
+  });
   final UserModel user;
+  final DogModel dog;
 
   @override
-  State<AddDog> createState() => _AddDogState();
+  State<EditDogPage> createState() => _EditDogPageState();
 }
 
-class _AddDogState extends State<AddDog> {
+class _EditDogPageState extends State<EditDogPage> {
   final GlobalKey<FormState> _addDogFormKey = GlobalKey<FormState>();
   final DogService dogService = DogService();
 
@@ -27,14 +32,22 @@ class _AddDogState extends State<AddDog> {
     if (context.mounted) FocusScope.of(context).unfocus();
     _addDogFormKey.currentState!.save();
     print('$dogName $breed $energyLevel $weight $age $ageTimespan');
-    dogService.createDog(
-        widget.user, dogName, breed, energyLevel, weight, age, ageTimespan);
+    dogService.updateDog(
+      widget.dog.dogId,
+      widget.user,
+      dogName,
+      breed,
+      energyLevel,
+      weight,
+      age,
+      ageTimespan,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add a new pal')),
+      appBar: AppBar(title: Text('Edit ${widget.dog.name}')),
       body: Form(
         key: _addDogFormKey,
         child: SafeArea(
@@ -63,7 +76,7 @@ class _AddDogState extends State<AddDog> {
                 alignment: Alignment.bottomCenter,
                 margin: const EdgeInsets.only(bottom: 150),
                 child: ElevatedButton(
-                    child: Text('Add Dog!'),
+                    child: const Text('Update Dog!'),
                     onPressed: () {
                       if (_addDogFormKey.currentState!.validate()) {
                         // If the form is valid, display a snackbar. In the real world,
@@ -93,6 +106,7 @@ class _AddDogState extends State<AddDog> {
           }
           return null;
         },
+        initialValue: widget.dog.name,
         decoration: const InputDecoration(
           fillColor: Colors.white,
           filled: true,
@@ -135,6 +149,7 @@ class _AddDogState extends State<AddDog> {
           labelText: 'Breed',
           border: OutlineInputBorder(),
         ),
+        initialValue: widget.dog.breed,
         onSaved: (String? value) {
           breed = value!;
         },
@@ -199,6 +214,7 @@ class _AddDogState extends State<AddDog> {
           labelText: 'Weight (lbs)',
           border: OutlineInputBorder(),
         ),
+        initialValue: widget.dog.weight.toString(),
         onSaved: (String? value) {
           weight = int.parse(value!.trim());
         },
@@ -240,6 +256,7 @@ class _AddDogState extends State<AddDog> {
                 labelText: 'Age',
                 border: OutlineInputBorder(),
               ),
+              initialValue: widget.dog.age.toString(),
               onSaved: (String? value) {
                 age = int.parse(value!.trim());
               },
