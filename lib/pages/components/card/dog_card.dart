@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
-import 'package:playpal/pages/card/horizontal_mock_card.dart';
-import 'package:playpal/pages/components/like_button.dart';
-import 'package:playpal/pages/components/user_avatar.dart';
+import 'package:playpal/pages/components/card/horizontal_mock_card.dart';
+import 'package:playpal/pages/components/card/like_button.dart';
+import 'package:playpal/pages/components/profile/user_avatar.dart';
 import 'package:playpal/pages/screens/match_screen.dart';
 
 class MockCard extends StatelessWidget {
