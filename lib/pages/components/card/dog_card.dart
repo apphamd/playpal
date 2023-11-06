@@ -156,19 +156,6 @@ class _DogCardPageState extends State<DogCardPage> {
                       ),
                     );
                   }
-
-                  // return profilePic.isNotEmpty
-                  //     ? Container(
-                  //         decoration: BoxDecoration(
-                  //             color: Colors.lightBlue,
-                  //             image: DecorationImage(
-                  //                 image: NetworkImage(profilePic))),
-                  //       )
-                  //     : Container(
-                  //         decoration: const BoxDecoration(
-                  //           color: Colors.lightBlue,
-                  //         ),
-                  //       );
                 },
               ),
 
@@ -195,6 +182,71 @@ class _DogCardPageState extends State<DogCardPage> {
                     style: const TextStyle(
                       fontSize: 35.0,
                       fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Breed
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 40.0, left: 20.0),
+                  child: Text(
+                    widget.dog.breed,
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+              ),
+
+              // energy level
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 65.0, left: 20.0),
+                  child: Text(
+                    '${widget.dog.energyLevel} energy',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
+
+              // location
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 85.0, left: 20.0),
+                  child: Text(
+                    '${widget.dog.city}, ${widget.dog.state}',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
+
+              // weight
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 105.0, left: 20.0),
+                  child: Text(
+                    '${widget.dog.weight.toString()} lbs',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
+
+              // age
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 125.0, left: 20.0),
+                  child: Text(
+                    '${widget.dog.age.toString()} ${widget.dog.ageTimespan}',
+                    style: const TextStyle(
+                      fontSize: 16.0,
                     ),
                   ),
                 ),

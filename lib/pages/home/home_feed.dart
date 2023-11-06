@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:playpal/crud/query/filter_dogs.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/components/card/dog_card.dart';
+import 'package:playpal/pages/components/card/filter_button.dart';
 
 class HomeFeed extends StatefulWidget {
   const HomeFeed({super.key, required this.user});
@@ -15,6 +17,14 @@ class HomeFeed extends StatefulWidget {
 class _HomeFeedState extends State<HomeFeed> {
   // Controllers
   final PageController _pageController = PageController();
+  final TextEditingController _energyLevelsDropdownController =
+      TextEditingController();
+  final TextEditingController _weightComparisonDropdownController =
+      TextEditingController();
+  final TextEditingController _weightTextController = TextEditingController();
+  final TextEditingController _ageComparisonDropdownController =
+      TextEditingController();
+  final TextEditingController _ageTextController = TextEditingController();
 
   // Firebase Firestore
   var db = FirebaseFirestore.instance;
@@ -43,6 +53,39 @@ class _HomeFeedState extends State<HomeFeed> {
       _allDogs = allDogs;
       _queriedDogs = allDogs;
     });
+    filterResults(
+      _energyLevelsDropdownController,
+      _weightComparisonDropdownController,
+      _weightTextController,
+      _ageComparisonDropdownController,
+      _ageTextController,
+    );
+  }
+
+  void filterResults(
+    TextEditingController energyLevel,
+    TextEditingController weightComparison,
+    TextEditingController weight,
+    TextEditingController ageComparison,
+    TextEditingController age,
+  ) {
+    setState(() {
+      _queriedDogs = _allDogs;
+      _queriedDogs = FilterDogs.filterByEnergyLevel(energyLevel, _queriedDogs);
+      _queriedDogs =
+          FilterDogs.filterByWeight(weightComparison, weight, _queriedDogs);
+      _queriedDogs = FilterDogs.filterByAge(ageComparison, age, _queriedDogs);
+    });
+  }
+
+  testCallback() {
+    filterResults(
+      _energyLevelsDropdownController,
+      _weightComparisonDropdownController,
+      _weightTextController,
+      _ageComparisonDropdownController,
+      _ageTextController,
+    );
   }
 
   @override
@@ -53,6 +96,20 @@ class _HomeFeedState extends State<HomeFeed> {
     setState(() {
       _currentUser = widget.user;
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    getAllDogs();
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _energyLevelsDropdownController.dispose();
+    // _comparisonDropdownController.dispose();
+    // _weightTextController.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,9 +125,17 @@ class _HomeFeedState extends State<HomeFeed> {
             'Location: ${_currentUser.city}, ${_currentUser.state}',
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
           ),
-          leading: const Padding(
-            padding: EdgeInsets.only(left: 6.0),
-            child: Icon(Icons.filter_alt, size: 30.0),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 6.0),
+            child: FilterButton(
+              test: testCallback,
+              energyLevelsDropdownController: _energyLevelsDropdownController,
+              weightComparisonDropdownController:
+                  _weightComparisonDropdownController,
+              weightTextController: _weightTextController,
+              ageComparisonDropdownController: _ageComparisonDropdownController,
+              ageTextController: _ageTextController,
+            ),
           ),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
@@ -86,10 +151,10 @@ class _HomeFeedState extends State<HomeFeed> {
       body: PageView.builder(
         scrollDirection: Axis.vertical,
         controller: _pageController,
-        itemCount: _allDogs.length,
+        itemCount: _queriedDogs.length,
         itemBuilder: (context, index) {
           return DogCardPage(
-            dog: _allDogs[index],
+            dog: _queriedDogs[index],
             currentUser: _currentUser,
           );
         },
