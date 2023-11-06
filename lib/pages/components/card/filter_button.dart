@@ -58,66 +58,69 @@ class _FilterButtonState extends State<FilterButton> {
             context: context,
             builder: (BuildContext context) => AlertDialog(
               title: const Text('Filter'),
-              content: Column(mainAxisSize: MainAxisSize.min, children: [
-                // Energy Levels
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Energy Level: '),
-                    DropdownMenu<EnergyLevel>(
-                      initialSelection: EnergyLevel.all,
-                      controller: widget.energyLevelsDropdownController,
-                      dropdownMenuEntries: energyLevelEntries,
-                    )
-                  ],
-                ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Energy Levels
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Energy Level: '),
+                      DropdownMenu<EnergyLevel>(
+                        initialSelection: EnergyLevel.all,
+                        controller: widget.energyLevelsDropdownController,
+                        dropdownMenuEntries: energyLevelEntries,
+                      )
+                    ],
+                  ),
 
-                // weight
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Weight: '),
-                    DropdownMenu(
-                      width: 100,
-                      controller: widget.weightComparisonDropdownController,
-                      dropdownMenuEntries: comparisonEntries,
-                    ),
-                    SizedBox(
-                      width: 50,
-                      child: TextField(
-                        controller: widget.weightTextController,
-                        showCursor: false,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                  // weight
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Weight: '),
+                      DropdownMenu(
+                        width: 100,
+                        controller: widget.weightComparisonDropdownController,
+                        dropdownMenuEntries: comparisonEntries,
+                      ),
+                      SizedBox(
+                        width: 50,
+                        child: TextField(
+                          controller: widget.weightTextController,
+                          showCursor: false,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
 
-                // age
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Age: '),
-                    DropdownMenu(
-                      width: 100,
-                      controller: widget.ageComparisonDropdownController,
-                      dropdownMenuEntries: comparisonEntries,
-                    ),
-                    SizedBox(
-                      width: 50,
-                      child: TextField(
-                        controller: widget.ageTextController,
-                        showCursor: false,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                  // age
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Age: '),
+                      DropdownMenu(
+                        width: 100,
+                        controller: widget.ageComparisonDropdownController,
+                        dropdownMenuEntries: comparisonEntries,
+                      ),
+                      SizedBox(
+                        width: 50,
+                        child: TextField(
+                          controller: widget.ageTextController,
+                          showCursor: false,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ]),
+                    ],
+                  ),
+                ],
+              ),
               actions: <Widget>[
                 TextButton(
                   onPressed: () => Navigator.pop(context, 'Cancel'),

@@ -4,6 +4,7 @@ import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/components/card/horizontal_mock_card.dart';
 import 'package:playpal/pages/components/card/like_button.dart';
+import 'package:playpal/pages/components/card/report_menu_button.dart';
 import 'package:playpal/pages/components/profile/user_avatar.dart';
 import 'package:playpal/pages/screens/match_screen.dart';
 
@@ -163,13 +164,32 @@ class _DogCardPageState extends State<DogCardPage> {
               Container(
                 alignment: Alignment.topRight,
                 padding: const EdgeInsets.only(
-                  top: 50.0,
-                  right: 10.0,
+                  top: 160.0,
+                  right: 35.0,
                 ),
-                child: const Icon(
-                  Icons.more_horiz,
-                  size: 40,
-                  color: Colors.white,
+                child: MenuAnchor(
+                  menuChildren: <Widget>[
+                    ReportMenuButton(
+                      reportingUserId: widget.currentUser.userId,
+                      reportedUserId: widget.dog.ownerId,
+                    ),
+                  ],
+                  builder: (context, controller, child) {
+                    return IconButton(
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.more_horiz,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                    );
+                  },
                 ),
               ),
 
