@@ -67,10 +67,10 @@ class _HomeFeedMockState extends State<HomeFeedMock> {
     TextEditingController weight,
   ) {
     setState(() {
-      _queriedDogs = FilterDogs.filterByEnergyLevel(energyLevel, _queriedDogs);
-      _queriedDogs = FilterDogs.filterByCity(city, _queriedDogs);
-      _queriedDogs =
-          FilterDogs.filterByWeight(comparison, weight, _queriedDogs);
+      // _queriedDogs = FilterDogs.filterByEnergyLevel(energyLevel, _queriedDogs);
+      // _queriedDogs = FilterDogs.filterByCity(city, _queriedDogs);
+      // _queriedDogs =
+      // FilterDogs.filterByWeight(comparison, weight, _queriedDogs);
     });
   }
 
