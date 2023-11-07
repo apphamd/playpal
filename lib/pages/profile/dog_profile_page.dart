@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
+import 'package:playpal/pages/components/profile/delete_dog_button.dart';
 import 'package:playpal/pages/components/profile/dog_profile_image_picker.dart';
 import 'package:playpal/pages/profile/edit_dog_page.dart';
 
@@ -97,6 +98,9 @@ class _DogProfilePageState extends State<DogProfilePage> {
               Text('Breed: ${widget.dog.breed}'),
               Text('Energy Level: ${widget.dog.energyLevel}'),
               Text('Weight: ${widget.dog.weight}'),
+              DeleteDogButton(
+                dogId: widget.dog.dogId,
+              ),
             ],
           ),
         ));
