@@ -45,7 +45,6 @@ class FilterDogs {
     List<DogModel> showResults = [];
 
     var comparisonWeight = int.tryParse(weightInput.text.toString());
-    print(comparisonWeight);
 
     if (comparison.text.toLowerCase() == 'all' ||
         comparison.text.toLowerCase() == '' ||
@@ -86,7 +85,6 @@ class FilterDogs {
     List<DogModel> showResults = [];
 
     var comparisonWeight = int.tryParse(ageInput.text.toString());
-    print(comparisonWeight);
 
     if (comparison.text.toLowerCase() == 'all' ||
         comparison.text.toLowerCase() == '' ||
