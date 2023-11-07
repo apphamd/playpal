@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 
@@ -54,5 +55,17 @@ class DogService {
       dogId: dogId,
     );
     db.collection('dogs').doc(dogId).set(dogToAdd.toFirestore());
+  }
+
+  static deleteDog(String dogId) async {
+    print(dogId);
+    await FirebaseStorage.instance.ref(dogId).listAll().then((value) {
+      value.items.forEach((element) {
+        print(element.fullPath);
+        FirebaseStorage.instance.ref(element.fullPath).delete();
+      });
+    });
+    // db.runTransaction((transaction) async =>
+    //     transaction.delete(db.collection('dogs').doc(dogId)));
   }
 }
