@@ -119,12 +119,15 @@ class _HomeFeedState extends State<HomeFeed> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(45.0),
         child: AppBar(
+          // this sets a transparent background for the app bar
           elevation: 0,
           backgroundColor: Colors.transparent,
           title: Text(
             'Location: ${_currentUser.city}, ${_currentUser.state}',
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
           ),
+
+          // filter button, must pass these controllers to filter results
           leading: Padding(
             padding: const EdgeInsets.only(left: 6.0),
             child: FilterButton(
@@ -137,6 +140,8 @@ class _HomeFeedState extends State<HomeFeed> {
               ageTextController: _ageTextController,
             ),
           ),
+
+          // this is the gradient for the app bar
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(

@@ -28,10 +28,14 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      ErrorHandling.showError(context, "Invalid username or password!");
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } on FirebaseAuthException {
+      if (mounted) {
+        Navigator.pop(context);
+        ErrorHandling.showError(context, "Invalid username or password!");
+      }
     }
   }
 

@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:playpal/pages/admin/reports_feed.dart';
 import 'package:playpal/pages/chat/conversations_page.dart';
-import 'package:playpal/pages/home/home_feed.dart';
 import 'package:playpal/pages/profile/user_profile_page.dart';
 import 'package:playpal/models/user_model.dart';
 
-class NavigationFrame extends StatefulWidget {
-  const NavigationFrame({super.key});
+class AdminNavigationFrame extends StatefulWidget {
+  const AdminNavigationFrame({super.key});
 
   @override
-  State<NavigationFrame> createState() => _NavigationFrameState();
+  State<AdminNavigationFrame> createState() => _AdminNavigationFrameState();
 }
 
-class _NavigationFrameState extends State<NavigationFrame> {
+class _AdminNavigationFrameState extends State<AdminNavigationFrame> {
   final userAuth = FirebaseAuth.instance.currentUser!;
   final db = FirebaseFirestore.instance;
   UserModel? _currentUser;
@@ -38,7 +38,7 @@ class _NavigationFrameState extends State<NavigationFrame> {
   @override
   Widget build(BuildContext context) {
     if (_currentUser?.userId == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Text('loading...');
     }
     return Scaffold(
       bottomNavigationBar: NavigationBar(
@@ -51,18 +51,18 @@ class _NavigationFrameState extends State<NavigationFrame> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home),
-            label: 'Home',
+            selectedIcon: Icon(Icons.report),
+            icon: Icon(Icons.report),
+            label: 'Reports',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.message_outlined),
-            icon: Icon(Icons.message_outlined),
-            label: 'Messages',
+            selectedIcon: Icon(Icons.supervised_user_circle),
+            icon: Icon(Icons.supervised_user_circle),
+            label: 'Users',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.account_circle_outlined),
-            icon: Icon(Icons.account_circle_outlined),
+            selectedIcon: Icon(Icons.admin_panel_settings),
+            icon: Icon(Icons.admin_panel_settings),
             label: 'Profile',
           ),
         ],
@@ -71,7 +71,7 @@ class _NavigationFrameState extends State<NavigationFrame> {
         Container(
           color: Colors.blue,
           alignment: Alignment.center,
-          child: HomeFeed(user: _currentUser!),
+          child: const ReportsFeed(),
         ),
         Container(
           color: Colors.green,
