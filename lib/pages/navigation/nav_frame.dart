@@ -42,12 +42,13 @@ class _NavigationFrameState extends State<NavigationFrame> {
     }
     return Scaffold(
       bottomNavigationBar: NavigationBar(
+        height: 60,
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.amber[800],
+        indicatorColor: Color.fromARGB(153, 255, 185, 94),
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(

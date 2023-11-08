@@ -62,9 +62,8 @@ class _ConversationsPageState extends State<ConversationsPage> {
             // create a list of ids from matches.
             List matchIdList = [];
             for (var doc in snapshot.data!.docs) {
-              var data = doc.data();
-              if (!matchIdList.contains(data['matched_user_id'])) {
-                matchIdList.add(data['matched_user_id']);
+              if (!matchIdList.contains(doc.id)) {
+                matchIdList.add(doc.id);
               }
             }
 
@@ -84,7 +83,6 @@ class _ConversationsPageState extends State<ConversationsPage> {
                   List<UserModel> matchedUsersList = [];
                   for (var doc in snapshot.data!.docs) {
                     for (var id in matchIdList) {
-                      print(doc.data());
                       UserModel user = UserModel.fromFirestore(doc);
                       if (id == doc.id && !matchedUsersList.contains(user)) {
                         matchedUsersList.add(user);
