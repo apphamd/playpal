@@ -68,6 +68,8 @@ class _RegisterPageState extends State<RegisterPage> {
       'city': city,
       'state': state,
       'birthday': birthdate,
+      'likes': [],
+      'dogs': [],
     });
   }
 

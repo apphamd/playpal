@@ -5,7 +5,8 @@ class UserModel {
   final String lastName;
   final String city;
   final String state;
-  final List? likes;
+  final List likes;
+  final List dogs;
   final String userId;
 
   const UserModel({
@@ -14,6 +15,7 @@ class UserModel {
     required this.city,
     required this.state,
     required this.likes,
+    required this.dogs,
     required this.userId,
   });
 
@@ -26,7 +28,8 @@ class UserModel {
       lastName: data?['l_name'],
       city: data?['city'],
       state: data?['state'],
-      likes: data?['likes'],
+      likes: data?['likes'] ?? [],
+      dogs: data?['dogs'] ?? [],
       userId: snapshot.id,
     );
   }
