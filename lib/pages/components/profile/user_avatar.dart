@@ -46,15 +46,23 @@ class _UserAvatarState extends State<UserAvatar> {
             children: <Widget>[
               profilePic != ''
                   ? CircleAvatar(
-                      radius: widget.radius,
-                      backgroundImage: NetworkImage(profilePic),
+                      radius: widget.radius + 4,
                       backgroundColor: Colors.white,
+                      child: CircleAvatar(
+                        radius: widget.radius,
+                        backgroundImage: NetworkImage(profilePic),
+                        backgroundColor: Colors.white,
+                      ),
                     )
                   : CircleAvatar(
-                      radius: widget.radius,
+                      radius: widget.radius + 4,
                       backgroundColor: Colors.white,
-                      backgroundImage: const NetworkImage(
-                          "https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_account_circle_48px-1024.png"),
+                      child: CircleAvatar(
+                        radius: widget.radius,
+                        backgroundColor: Colors.white,
+                        backgroundImage: const NetworkImage(
+                            "https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_account_circle_48px-1024.png"),
+                      ),
                     ),
             ],
           );
