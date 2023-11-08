@@ -7,6 +7,7 @@ import 'package:playpal/pages/components/card/like_button.dart';
 import 'package:playpal/pages/components/card/report_menu_button.dart';
 import 'package:playpal/pages/components/profile/user_avatar.dart';
 import 'package:playpal/pages/screens/match_screen.dart';
+import 'package:playpal/service/user_service.dart';
 
 class MockCard extends StatelessWidget {
   const MockCard({super.key, required this.color});
@@ -44,25 +45,25 @@ class DogCardPage extends StatefulWidget {
 class _DogCardPageState extends State<DogCardPage> {
   bool isLiked = false;
 
-  void toggleLike() {
+  void toggleLike() async {
     setState(() {
       isLiked = !isLiked;
     });
 
     DocumentReference dogRef =
         FirebaseFirestore.instance.collection('dogs').doc(widget.dog.dogId);
-    DocumentReference dogOwnerRef =
-        FirebaseFirestore.instance.collection('users').doc(widget.dog.ownerId);
+    DocumentReference currentUserRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.currentUser.userId);
 
-    // if user likes dog, add userId to 'likes' array of dog
+    // if current user likes dog, add userId to 'likes' array of dog
+    // and add the dog's id to the current user's 'likes' array
     if (isLiked) {
       dogRef.update({
         'likes': FieldValue.arrayUnion([widget.currentUser.userId])
       });
-      dogOwnerRef.update({
-        'likes': FieldValue.arrayUnion([
-          {'user': widget.currentUser.userId, 'dog': widget.dog.dogId}
-        ])
+      currentUserRef.update({
+        'likes': FieldValue.arrayUnion([widget.dog.dogId])
       });
       checkLikes();
     }
@@ -71,43 +72,57 @@ class _DogCardPageState extends State<DogCardPage> {
       dogRef.update({
         'likes': FieldValue.arrayRemove([widget.currentUser.userId])
       });
-      dogOwnerRef.update({
-        'likes': FieldValue.arrayRemove([
-          {'user': widget.currentUser.userId, 'dog': widget.dog.dogId}
-        ])
+      currentUserRef.update({
+        'likes': FieldValue.arrayRemove([widget.dog.dogId])
       });
     }
   }
 
-  void checkLikes() {
-    for (var map in widget.currentUser.likes!) {
-      var dog = map['dog'];
-      var user = map['user'];
-      print('UserID: $user \t DogID: $dog');
-      if (widget.dog.ownerId == user) {
-        print('Congratulations! You found a pal!');
+  void checkLikes() async {
+    // so i just liked a dog right?
+    // lets take that dogs owner id and create a User Object from it
+    List likes;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.dog.ownerId)
+        .get()
+        .then((snapshot) {
+      Map data = snapshot.data() as Map;
+      likes = data['likes'];
 
-        DocumentReference currentUserRef = FirebaseFirestore.instance
-            .collection('users')
-            .doc(widget.currentUser.userId)
-            .collection('matches')
-            .doc();
-
-        currentUserRef.set({
-          'matched_user_id': widget.dog.ownerId,
-          'dog_id': widget.dog.dogId
-        });
-
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return MatchScreen(
-              currentUser: widget.currentUser,
-              matchedUserId: user,
+      // with that user object, lets go thru that user's likes to see if they
+      // liked one of my dogs!
+      for (String ownedDogId in widget.currentUser.dogs) {
+        for (String likedDog in likes) {
+          if (ownedDogId == likedDog) {
+            print('There is a match!');
+            UserService.addMatch(
+              widget.currentUser.userId,
+              ownedDogId,
+              widget.dog.ownerId,
+              widget.dog.dogId,
             );
-          },
-        ));
+
+            // go to the match screen
+            if (mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return MatchScreen(
+                      currentUser: widget.currentUser,
+                      matchedUserId: widget.dog.ownerId,
+                      currentUserDogId: ownedDogId,
+                      matchedUserDogId: widget.dog.dogId,
+                    );
+                  },
+                ),
+              );
+            }
+          }
+        }
       }
-    }
+    });
   }
 
   @override
@@ -195,13 +210,19 @@ class _DogCardPageState extends State<DogCardPage> {
 
               // Dog Name
               SafeArea(
-                child: Container(
+                child: Padding(
                   padding: const EdgeInsets.only(left: 20.0),
-                  child: Text(
-                    widget.dog.name,
-                    style: const TextStyle(
-                      fontSize: 35.0,
-                      fontWeight: FontWeight.bold,
+                  child: Container(
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: const BoxDecoration(
+                        color: Color.fromRGBO(255, 255, 255, 0.776),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Text(
+                      widget.dog.name,
+                      style: const TextStyle(
+                        fontSize: 35.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
