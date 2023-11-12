@@ -66,12 +66,8 @@ class _AddDogPageState extends State<AddDogPage> {
                     child: Text('Add Dog!'),
                     onPressed: () {
                       if (_addDogFormKey.currentState!.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
                         submitForm();
+                        Navigator.pop(context);
                       }
                     }),
               )

@@ -8,7 +8,10 @@ class DeleteDogButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => DogService.deleteDog(dogId),
+      onPressed: () {
+        DogService.deleteDog(dogId);
+        Navigator.pop(context);
+      },
       style: const ButtonStyle(
           backgroundColor: MaterialStatePropertyAll(Colors.red)),
       child: const Text('Delete???'),
