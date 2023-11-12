@@ -4,7 +4,8 @@ import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 
 class DogService {
-  final FirebaseFirestore db = FirebaseFirestore.instance;
+  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  static final FirebaseStorage _storage = FirebaseStorage.instance;
 
   void createDog(
     UserModel user,
@@ -28,7 +29,7 @@ class DogService {
       ownerId: user.userId,
       dogId: '',
     );
-    db.collection('dogs').add(dogToAdd.toFirestore());
+    _db.collection('dogs').add(dogToAdd.toFirestore());
   }
 
   void updateDog(
@@ -54,18 +55,11 @@ class DogService {
       ownerId: user.userId,
       dogId: dogId,
     );
-    db.collection('dogs').doc(dogId).set(dogToAdd.toFirestore());
+    _db.collection('dogs').doc(dogId).set(dogToAdd.toFirestore());
   }
 
   static deleteDog(String dogId) async {
-    print(dogId);
-    await FirebaseStorage.instance.ref(dogId).listAll().then((value) {
-      value.items.forEach((element) {
-        print(element.fullPath);
-        FirebaseStorage.instance.ref(element.fullPath).delete();
-      });
-    });
-    // db.runTransaction((transaction) async =>
-    //     transaction.delete(db.collection('dogs').doc(dogId)));
+    _db.runTransaction((transaction) async =>
+        transaction.delete(_db.collection('dogs').doc(dogId)));
   }
 }
