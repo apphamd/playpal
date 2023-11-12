@@ -17,19 +17,9 @@ class CurrentUserProfilePage extends StatefulWidget {
 
 class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
   final dogs = FirebaseFirestore.instance.collection('dogs');
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> _userDogs = [];
 
   void userSignOut() {
     FirebaseAuth.instance.signOut();
-  }
-
-  Future getDogs() async {
-    _userDogs = [];
-    await dogs.get().then((snapshot) => snapshot.docs.forEach((document) {
-          if (document.data()['owner_id'] == widget.currentUser.userId) {
-            _userDogs.add(document);
-          }
-        }));
   }
 
   @override
@@ -106,19 +96,92 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
           // TODO: turn this into a instagram like card system
           Container(
             padding: const EdgeInsets.only(top: 180),
-            child: FutureBuilder(
-              future: getDogs(),
+            child: StreamBuilder(
+              stream: dogs.snapshots(),
               builder: ((context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (_userDogs.isEmpty) {
+
+                if (snapshot.hasData) {
+                  List<DogModel> userDogs = [];
+
+                  if (snapshot.data != null) {
+                    for (var doc in snapshot.data!.docs) {
+                      Map dogData = doc.data();
+                      if (dogData['owner_id'] == widget.currentUser.userId) {
+                        userDogs.add(DogModel.fromFirestore(doc));
+                      }
+                    }
+                  }
+
+                  // for (var dog in widget.currentUser.dogs) {}
+
+                  // no dogs
+                  if (userDogs.isEmpty) {
+                    return Column(
+                      children: [
+                        const SizedBox(height: 50),
+                        const Center(
+                            child: Text('Uh oh, where are your buddies at?')),
+                        const SizedBox(height: 50),
+                        Container(
+                          alignment: Alignment.center,
+                          width: 45,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.indigoAccent.shade400, width: 3),
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            color: Colors.white,
+                            iconSize: 20,
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddDogPage(user: widget.currentUser),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  // has dogs
                   return Column(
                     children: [
-                      const SizedBox(height: 50),
-                      const Center(
-                          child: Text('Uh oh, where are your buddies at?')),
-                      const SizedBox(height: 50),
+                      const SizedBox(height: 10),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: userDogs.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            child: ListTile(
+                              title: Text(userDogs[index].name),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DogProfilePage(
+                                        owner: widget.currentUser,
+                                        dog: userDogs[index]),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+
+                      // add dog button
                       Container(
                         alignment: Alignment.center,
                         width: 45,
@@ -146,62 +209,9 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                       ),
                     ],
                   );
+                } else {
+                  return const Center(child: Text('An error has occurred'));
                 }
-                return Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _userDogs.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: ListTile(
-                            title: Text(_userDogs[index]['f_name']),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DogProfilePage(
-                                      owner: widget.currentUser,
-                                      dog: DogModel.fromFirestore(
-                                          _userDogs[index])),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-
-                    // add dog button
-                    Container(
-                      alignment: Alignment.center,
-                      width: 45,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.indigoAccent.shade400, width: 3),
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        color: Colors.white,
-                        iconSize: 20,
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  AddDogPage(user: widget.currentUser),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
               }),
             ),
           ),
