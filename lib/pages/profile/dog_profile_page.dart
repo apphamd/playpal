@@ -100,6 +100,7 @@ class _DogProfilePageState extends State<DogProfilePage> {
               Text('Weight: ${widget.dog.weight}'),
               DeleteDogButton(
                 dogId: widget.dog.dogId,
+                userId: widget.owner.userId,
               ),
             ],
           ),

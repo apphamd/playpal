@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/crud/query/filter_dogs.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/components/card/dog_card.dart';
 import 'package:playpal/pages/components/card/filter_button.dart';
+import 'package:playpal/pages/home/no_dogs.dart';
 
 class HomeFeed extends StatefulWidget {
-  const HomeFeed({super.key, required this.user});
-  final UserModel user;
+  const HomeFeed({super.key});
 
   @override
   State<HomeFeed> createState() => _HomeFeedState();
@@ -34,7 +35,18 @@ class _HomeFeedState extends State<HomeFeed> {
   List<DogModel> _queriedDogs = [];
 
   // user
-  late UserModel _currentUser;
+  final userAuth = FirebaseAuth.instance.currentUser!;
+  UserModel _currentUser = UserModel.mockUser();
+
+  Future getCurrentUserData() async {
+    await db.collection('users').doc(userAuth.uid).get().then((docSnapshot) {
+      UserModel currentUser = UserModel.fromFirestore(docSnapshot);
+      setState(() {
+        _currentUser = currentUser;
+      });
+    });
+    getAllDogs();
+  }
 
   getAllDogs() async {
     List<DogModel> allDogs = [];
@@ -92,10 +104,7 @@ class _HomeFeedState extends State<HomeFeed> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getAllDogs();
-    setState(() {
-      _currentUser = widget.user;
-    });
+    getCurrentUserData();
   }
 
   @override
@@ -153,17 +162,19 @@ class _HomeFeedState extends State<HomeFeed> {
           ),
         ),
       ),
-      body: PageView.builder(
-        scrollDirection: Axis.vertical,
-        controller: _pageController,
-        itemCount: _queriedDogs.length,
-        itemBuilder: (context, index) {
-          return DogCardPage(
-            dog: _queriedDogs[index],
-            currentUser: _currentUser,
-          );
-        },
-      ),
+      body: _currentUser.dogs.isEmpty
+          ? const NoDogs()
+          : PageView.builder(
+              scrollDirection: Axis.vertical,
+              controller: _pageController,
+              itemCount: _queriedDogs.length,
+              itemBuilder: (context, index) {
+                return DogCardPage(
+                  dog: _queriedDogs[index],
+                  currentUser: _currentUser,
+                );
+              },
+            ),
     );
   }
 }

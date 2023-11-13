@@ -15,7 +15,7 @@ class DogService {
     int weight,
     int age,
     String ageTimespan,
-  ) {
+  ) async {
     DogModel dogToAdd = DogModel(
       name: name,
       breed: breed,
@@ -29,7 +29,11 @@ class DogService {
       ownerId: user.userId,
       dogId: '',
     );
-    _db.collection('dogs').add(dogToAdd.toFirestore());
+    DocumentReference dogRef =
+        await _db.collection('dogs').add(dogToAdd.toFirestore());
+    await _db.collection('users').doc(user.userId).update({
+      'dogs': FieldValue.arrayUnion([dogRef.id])
+    });
   }
 
   void updateDog(
@@ -58,8 +62,14 @@ class DogService {
     _db.collection('dogs').doc(dogId).set(dogToAdd.toFirestore());
   }
 
-  static deleteDog(String dogId) async {
+  static deleteDog(
+    String dogId,
+    String userId,
+  ) async {
     _db.runTransaction((transaction) async =>
         transaction.delete(_db.collection('dogs').doc(dogId)));
+    await _db.collection('users').doc(userId).update({
+      'dogs': FieldValue.arrayRemove([dogId])
+    });
   }
 }
