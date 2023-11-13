@@ -72,7 +72,7 @@ class _NavigationFrameState extends State<NavigationFrame> {
         Container(
           color: Colors.blue,
           alignment: Alignment.center,
-          child: HomeFeed(user: _currentUser!),
+          child: const HomeFeed(),
         ),
         Container(
           color: Colors.green,
