@@ -19,6 +19,18 @@ class UserModel {
     required this.userId,
   });
 
+  static UserModel mockUser() {
+    return const UserModel(
+      firstName: 'firstName',
+      lastName: 'lastName',
+      city: 'city',
+      state: 'state',
+      likes: [],
+      dogs: ['dogId'],
+      userId: 'userId',
+    );
+  }
+
   factory UserModel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
