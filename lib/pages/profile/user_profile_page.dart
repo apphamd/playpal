@@ -182,31 +182,34 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                       const SizedBox(height: 20),
 
                       // add dog button
-                      Container(
-                        alignment: Alignment.center,
-                        width: 45,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.indigoAccent.shade400, width: 3),
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          color: Colors.white,
-                          iconSize: 20,
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AddDogPage(user: widget.currentUser),
+                      userDogs.length == 3
+                          ? Container()
+                          : Container(
+                              alignment: Alignment.center,
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.indigoAccent.shade400,
+                                    width: 3),
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
                               ),
-                            );
-                          },
-                        ),
-                      ),
+                              child: IconButton(
+                                color: Colors.white,
+                                iconSize: 20,
+                                icon: const Icon(Icons.add),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddDogPage(user: widget.currentUser),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                     ],
                   );
                 } else {
