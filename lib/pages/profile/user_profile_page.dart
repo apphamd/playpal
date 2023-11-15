@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:playpal/pages/components/profile/user_more_menu_button.dart';
 import 'package:playpal/pages/profile/add_dog_page.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
@@ -49,6 +50,7 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
           children: [
             Row(
               children: [
+                // User's name
                 Text(
                   '${widget.currentUser.firstName} ${widget.currentUser.lastName}',
                   style: const TextStyle(
@@ -58,10 +60,8 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                   ),
                 ),
                 const Spacer(),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.more_horiz),
-                  color: Colors.black,
+                UserMenuMoreButton(
+                  currentUser: widget.currentUser,
                 ),
                 IconButton(
                   onPressed: userSignOut,
