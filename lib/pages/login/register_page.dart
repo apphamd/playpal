@@ -45,12 +45,16 @@ class _RegisterPageState extends State<RegisterPage> {
         email: _email,
         password: _password,
       );
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
       addUserDetails(credential.user!.uid, _fName.trim(), _lName.trim(),
           _city.trim(), _state.trim(), Timestamp.fromDate(_birthdate));
     } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      ErrorHandling.showError(context, e.code);
+      if (mounted) {
+        Navigator.pop(context);
+        ErrorHandling.showError(context, e.code);
+      }
     }
   }
 

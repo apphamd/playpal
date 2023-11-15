@@ -7,6 +7,8 @@ class UserModel {
   final String state;
   final List likes;
   final List dogs;
+  final DateTime birthday;
+  final String profilePic;
   final String userId;
 
   const UserModel({
@@ -16,17 +18,21 @@ class UserModel {
     required this.state,
     required this.likes,
     required this.dogs,
+    required this.birthday,
+    required this.profilePic,
     required this.userId,
   });
 
   static UserModel mockUser() {
-    return const UserModel(
+    return UserModel(
       firstName: 'firstName',
       lastName: 'lastName',
       city: 'city',
       state: 'state',
       likes: [],
       dogs: ['dogId'],
+      birthday: DateTime.now(),
+      profilePic: 'profile pic',
       userId: 'userId',
     );
   }
@@ -35,6 +41,8 @@ class UserModel {
     DocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
     final data = snapshot.data();
+    Timestamp birthday = data?['birthday'];
+
     return UserModel(
       firstName: data?['f_name'],
       lastName: data?['l_name'],
@@ -42,6 +50,8 @@ class UserModel {
       state: data?['state'],
       likes: data?['likes'] ?? [],
       dogs: data?['dogs'] ?? [],
+      birthday: birthday.toDate(),
+      profilePic: data?['profile_pic'] ?? '',
       userId: snapshot.id,
     );
   }
@@ -52,6 +62,10 @@ class UserModel {
       "l_name": lastName,
       "city": city,
       "state": state,
+      "likes": likes,
+      "dogs": dogs,
+      "birthday": birthday,
+      "profile_pic": profilePic,
     };
   }
 }

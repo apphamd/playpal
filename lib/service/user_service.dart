@@ -1,27 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:playpal/models/user_model.dart';
 
 class UserService {
-  static FirebaseFirestore db = FirebaseFirestore.instance;
+  static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  static UserModel mockUser = const UserModel(
-    firstName: "Mock",
-    lastName: "User",
-    city: "Oxford",
-    state: "MS",
-    likes: [],
-    dogs: [],
-    userId: 'MockUserId',
-  );
+  static void updateUser(
+    UserModel user,
+    String firstName,
+    String lastName,
+    String city,
+    String state,
+    DateTime birthday,
+  ) async {
+    UserModel updatedUser = UserModel(
+      firstName: firstName,
+      lastName: lastName,
+      city: city,
+      state: state,
+      likes: user.likes,
+      dogs: user.dogs,
+      birthday: birthday,
+      profilePic: user.profilePic,
+      userId: user.userId,
+    );
+    _db.collection('users').doc(user.userId).set(updatedUser.toFirestore());
+  }
 
   static UserModel getUserFromId(String userId) {
-    db.collection('users').doc(userId).get().then((value) {
+    _db.collection('users').doc(userId).get().then((value) {
       UserModel user = UserModel.fromFirestore(value);
       print(user.toFirestore());
       return user;
     });
 
-    return mockUser;
+    return UserModel.mockUser();
   }
 
   static void addMatch(
