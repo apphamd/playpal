@@ -64,7 +64,8 @@ class UserService {
     try {
       await deleteAllDogs(user);
       FirebaseAuth.instance.currentUser?.delete();
-      _db.collection('users').doc(user.userId).delete();
+      _db.runTransaction((transaction) async =>
+          transaction.delete(_db.collection('users').doc(user.userId)));
     } on FirebaseAuthException catch (e) {
       if (e.code == "requires-recent-login") {
         await reauthenticateUser();
