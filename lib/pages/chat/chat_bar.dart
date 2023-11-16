@@ -60,7 +60,7 @@ class _ChatBarState extends State<ChatBar> {
 
   Future<void> _sendMessage(BuildContext context) async {
     if (controller.text.isNotEmpty) {
-      await MessageCrud.createMessage(
+      await MessageService.createMessage(
         content: controller.text,
         senderId: widget.currentUser.userId,
         recipientId: widget.recipient.userId,
