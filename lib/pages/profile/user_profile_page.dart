@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:playpal/pages/components/profile/user_more_menu_button.dart';
 import 'package:playpal/pages/profile/add_dog_page.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
@@ -8,8 +9,7 @@ import 'package:playpal/pages/components/profile/user_avatar_picker.dart';
 import 'package:playpal/pages/profile/dog_profile_page.dart';
 
 class CurrentUserProfilePage extends StatefulWidget {
-  const CurrentUserProfilePage({super.key, required this.currentUser});
-  final UserModel currentUser;
+  const CurrentUserProfilePage({super.key});
 
   @override
   State<CurrentUserProfilePage> createState() => _CurrentUserProfilePageState();
@@ -17,6 +17,52 @@ class CurrentUserProfilePage extends StatefulWidget {
 
 class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
   final dogs = FirebaseFirestore.instance.collection('dogs');
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // user
+  final userAuth = FirebaseAuth.instance.currentUser!;
+  UserModel _currentUser = UserModel.mockUser();
+
+  Future getCurrentUserData() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userAuth.uid)
+        .get()
+        .then((docSnapshot) {
+      UserModel currentUser = UserModel.fromFirestore(docSnapshot);
+      setState(() {
+        _currentUser = currentUser;
+      });
+    });
+  }
+
+  void setCurrentUserData(UserModel updatedUser) {
+    setState(() {
+      _currentUser = updatedUser;
+    });
+  }
+
+  void addDog(String dogId) {
+    List dogsList = _currentUser.dogs;
+    if (!dogsList.contains(dogId)) {
+      print(dogId);
+      dogsList.add(dogId);
+    }
+    setState(() {
+      _currentUser = UserModel(
+        firstName: _currentUser.firstName,
+        lastName: _currentUser.lastName,
+        city: _currentUser.city,
+        state: _currentUser.state,
+        dogs: dogsList,
+        likes: _currentUser.likes,
+        birthday: _currentUser.birthday,
+        profilePic: _currentUser.profilePic,
+        userId: _currentUser.userId,
+      );
+    });
+    print(_currentUser.dogs);
+  }
 
   void userSignOut() {
     FirebaseAuth.instance.signOut();
@@ -24,12 +70,14 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
 
   @override
   void initState() {
+    getCurrentUserData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 100,
@@ -49,19 +97,19 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
           children: [
             Row(
               children: [
+                // User's name
                 Text(
-                  '${widget.currentUser.firstName} ${widget.currentUser.lastName}',
+                  '${_currentUser.firstName} ${_currentUser.lastName}',
                   style: const TextStyle(
-                    fontSize: 30,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 const Spacer(),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.more_horiz),
-                  color: Colors.black,
+                UserMenuMoreButton(
+                  currentUser: _currentUser,
+                  updateUser: setCurrentUserData,
                 ),
                 IconButton(
                   onPressed: userSignOut,
@@ -73,9 +121,11 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
               ],
             ),
             Text(
-              '\t${widget.currentUser.city}, ${widget.currentUser.state}',
+              _currentUser.userId == ''
+                  ? ''
+                  : '${_currentUser.city}, ${_currentUser.state}',
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.black,
               ),
             ),
@@ -87,9 +137,15 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
           Container(
             alignment: Alignment.topCenter,
             padding: const EdgeInsets.only(top: 20),
-            child: UserAvatarPicker(
-              currentUser: widget.currentUser,
-            ),
+            child: _currentUser.userId == ''
+                ? const CircleAvatar(
+                    radius: 72,
+                    backgroundColor: Colors.white,
+                    child: CircularProgressIndicator(),
+                  )
+                : UserAvatarPicker(
+                    currentUser: _currentUser,
+                  ),
           ),
 
           // list of dogs
@@ -109,13 +165,11 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                   if (snapshot.data != null) {
                     for (var doc in snapshot.data!.docs) {
                       Map dogData = doc.data();
-                      if (dogData['owner_id'] == widget.currentUser.userId) {
+                      if (dogData['owner_id'] == _currentUser.userId) {
                         userDogs.add(DogModel.fromFirestore(doc));
                       }
                     }
                   }
-
-                  // for (var dog in widget.currentUser.dogs) {}
 
                   // no dogs
                   if (userDogs.isEmpty) {
@@ -143,8 +197,10 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddDogPage(user: widget.currentUser),
+                                  builder: (context) => AddDogPage(
+                                    user: _currentUser,
+                                    addDog: addDog,
+                                  ),
                                 ),
                               );
                             },
@@ -170,7 +226,7 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DogProfilePage(
-                                        owner: widget.currentUser,
+                                        owner: _currentUser,
                                         dog: userDogs[index]),
                                   ),
                                 );
@@ -203,8 +259,10 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddDogPage(user: widget.currentUser),
+                                      builder: (context) => AddDogPage(
+                                        user: _currentUser,
+                                        addDog: addDog,
+                                      ),
                                     ),
                                   );
                                 },

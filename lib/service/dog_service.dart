@@ -7,7 +7,7 @@ class DogService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
   static final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  void createDog(
+  Future<String> createDog(
     UserModel user,
     String name,
     String breed,
@@ -34,6 +34,7 @@ class DogService {
     await _db.collection('users').doc(user.userId).update({
       'dogs': FieldValue.arrayUnion([dogRef.id])
     });
+    return dogRef.id;
   }
 
   void updateDog(
@@ -66,10 +67,10 @@ class DogService {
     String dogId,
     String userId,
   ) async {
-    _db.runTransaction((transaction) async =>
-        transaction.delete(_db.collection('dogs').doc(dogId)));
     await _db.collection('users').doc(userId).update({
       'dogs': FieldValue.arrayRemove([dogId])
     });
+    _db.runTransaction((transaction) async =>
+        transaction.delete(_db.collection('dogs').doc(dogId)));
   }
 }
