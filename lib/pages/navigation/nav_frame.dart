@@ -83,9 +83,7 @@ class _NavigationFrameState extends State<NavigationFrame> {
         ),
         Container(
           alignment: Alignment.center,
-          child: CurrentUserProfilePage(
-            currentUser: _currentUser!,
-          ),
+          child: const CurrentUserProfilePage(),
         ),
       ][currentPageIndex],
     );

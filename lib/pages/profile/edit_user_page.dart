@@ -6,8 +6,10 @@ class EditUserPage extends StatefulWidget {
   const EditUserPage({
     super.key,
     required this.currentUser,
+    required this.updateUser,
   });
   final UserModel currentUser;
+  final Function(UserModel updatedUser) updateUser;
 
   @override
   State<EditUserPage> createState() => _EditUserPageState();
@@ -27,7 +29,7 @@ class _EditUserPageState extends State<EditUserPage> {
     if (context.mounted) FocusScope.of(context).unfocus();
     _editUserFormKey.currentState!.save();
     print('$firstName $lastName $city $state $birthday');
-    UserService.updateUser(
+    UserModel updatedUser = UserService.updateUser(
       widget.currentUser,
       firstName,
       lastName,
@@ -35,6 +37,10 @@ class _EditUserPageState extends State<EditUserPage> {
       state,
       birthday,
     );
+    widget.updateUser(updatedUser);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   @override

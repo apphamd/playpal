@@ -82,9 +82,7 @@ class _AdminNavigationFrameState extends State<AdminNavigationFrame> {
         ),
         Container(
           alignment: Alignment.center,
-          child: CurrentUserProfilePage(
-            currentUser: _currentUser!,
-          ),
+          child: const CurrentUserProfilePage(),
         ),
       ][currentPageIndex],
     );

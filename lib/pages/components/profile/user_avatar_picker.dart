@@ -47,7 +47,7 @@ class _UserAvatarPickerState extends State<UserAvatarPicker> {
             child: Text('An error has occured ${snapshot.error}'),
           );
         }
-        var currentUser;
+        Map currentUser = {};
         String profilePic = '';
         if (snapshot.hasData) {
           for (var user in snapshot.data!.docs) {

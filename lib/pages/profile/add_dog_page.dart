@@ -4,8 +4,13 @@ import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 
 class AddDogPage extends StatefulWidget {
-  AddDogPage({super.key, required this.user});
+  const AddDogPage({
+    super.key,
+    required this.user,
+    required this.addDog,
+  });
   final UserModel user;
+  final Function(String dogId) addDog;
 
   @override
   State<AddDogPage> createState() => _AddDogPageState();
@@ -23,12 +28,13 @@ class _AddDogPageState extends State<AddDogPage> {
   int age = 0;
   String ageTimespan = '';
 
-  void submitForm() {
+  void submitForm() async {
     if (context.mounted) FocusScope.of(context).unfocus();
     _addDogFormKey.currentState!.save();
     print('$dogName $breed $energyLevel $weight $age $ageTimespan');
-    dogService.createDog(
+    String dogId = await dogService.createDog(
         widget.user, dogName, breed, energyLevel, weight, age, ageTimespan);
+    widget.addDog(dogId);
   }
 
   @override
