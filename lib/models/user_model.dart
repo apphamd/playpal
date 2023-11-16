@@ -25,15 +25,15 @@ class UserModel {
 
   static UserModel mockUser() {
     return UserModel(
-      firstName: 'firstName',
-      lastName: 'lastName',
-      city: 'city',
-      state: 'state',
+      firstName: '',
+      lastName: '',
+      city: '',
+      state: '',
       likes: [],
-      dogs: ['dogId'],
+      dogs: [''],
       birthday: DateTime.now(),
-      profilePic: 'profile pic',
-      userId: 'userId',
+      profilePic: '',
+      userId: '',
     );
   }
 
