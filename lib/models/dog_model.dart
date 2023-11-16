@@ -9,7 +9,7 @@ class DogModel {
   final int weight;
   final int age;
   final String? ageTimespan;
-  final List? likes;
+  final List likes;
   // TODO: add vaccination status
   // final bool isVaccinated;
   final String ownerId;
@@ -42,7 +42,7 @@ class DogModel {
       weight: data['weight'],
       age: data['age'] ?? 0,
       ageTimespan: data['ageTimespan'],
-      likes: data['likes'],
+      likes: data['likes'] ?? [],
       ownerId: data['owner_id'],
       dogId: snapshot.id,
     );
