@@ -125,6 +125,23 @@ class _DogCardPageState extends State<DogCardPage> {
     });
   }
 
+  void checkIfLiked() {
+    for (var userId in widget.dog.likes) {
+      if (widget.currentUser.userId == userId) {
+        setState(() {
+          isLiked = true;
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkIfLiked();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -179,7 +196,7 @@ class _DogCardPageState extends State<DogCardPage> {
               Container(
                 alignment: Alignment.topRight,
                 padding: const EdgeInsets.only(
-                  top: 160.0,
+                  top: 180.0,
                   right: 35.0,
                 ),
                 child: MenuAnchor(
@@ -199,7 +216,7 @@ class _DogCardPageState extends State<DogCardPage> {
                         }
                       },
                       icon: const Icon(
-                        Icons.more_horiz,
+                        Icons.more_vert,
                         size: 40,
                         color: Colors.white,
                       ),
