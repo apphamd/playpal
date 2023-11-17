@@ -17,6 +17,7 @@ class MessageBubble extends StatelessWidget {
     return Align(
       alignment: isSender ? Alignment.topRight : Alignment.topLeft,
       child: Container(
+        constraints: const BoxConstraints(maxWidth: 240),
         decoration: isSender
             ? BoxDecoration(
                 color: Colors.blue[600],
