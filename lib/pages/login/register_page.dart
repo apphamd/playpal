@@ -89,102 +89,115 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.blue[300],
       body: Stack(
         children: <Widget>[
+          // Register title
           SafeArea(
             child: Container(
-                alignment: Alignment.topCenter,
-                padding: const EdgeInsets.only(top: 30.0),
-                child: const Text('Register', style: TextStyle(fontSize: 40))),
+              alignment: Alignment.topCenter,
+              padding: const EdgeInsets.only(top: 30.0),
+              child: const Text(
+                'Register',
+                style: TextStyle(fontSize: 40),
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 80.0),
-            child: Stepper(
-              connectorThickness: 2.75,
-              connectorColor: MaterialStatePropertyAll(Colors.amber.shade600),
-              physics: const NeverScrollableScrollPhysics(),
-              controlsBuilder: (BuildContext context, ControlsDetails details) {
-                return Row(
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: details.onStepContinue,
-                      child: currentStep == getSteps().length - 1
-                          ? const Text('SUBMIT')
-                          : const Text('NEXT'),
-                    ),
-                    const SizedBox(width: 20),
-                    ElevatedButton(
-                      onPressed: details.onStepCancel,
-                      child: currentStep == 0
-                          ? const Text('CANCEL')
-                          : const Text('BACK'),
-                    ),
-                  ],
-                );
-              },
-              type: StepperType.vertical,
-              steps: getSteps(),
-              currentStep: currentStep,
-              onStepTapped: (value) {
-                setState(() {
-                  currentStep = value;
-                });
-              },
-              onStepContinue: () {
-                if (currentStep != getSteps().length - 1 &&
-                    _formKeyList[currentStep].currentState!.validate()) {
-                  _formKeyList[currentStep].currentState!.save();
-                  setState(() {
-                    currentStep++;
-                  });
-                } else if (currentStep == getSteps().length - 1 &&
-                    _formKeyList[currentStep].currentState!.validate()) {
-                  _formKeyList[currentStep].currentState!.save();
-                  print(
-                      '$_fName $_lName \n${_birthdate} \n$_city, $_state \n$_email $_password');
-                  userRegister();
-                  Navigator.pop(context);
-                }
-              },
-              onStepCancel: () {
-                if (currentStep != 0) {
-                  setState(() {
-                    currentStep--;
-                  });
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ),
-
-          // have an account already?
-          Container(
-            alignment: Alignment.bottomCenter,
-            padding: const EdgeInsets.only(bottom: 100),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
               children: [
-                const Text(
-                  'Have an account already?',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 5),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
+                Stepper(
+                  connectorThickness: 2.75,
+                  connectorColor:
+                      MaterialStatePropertyAll(Colors.amber.shade600),
+                  physics: const NeverScrollableScrollPhysics(),
+                  controlsBuilder:
+                      (BuildContext context, ControlsDetails details) {
+                    return Row(
+                      children: <Widget>[
+                        ElevatedButton(
+                          onPressed: details.onStepContinue,
+                          child: currentStep == getSteps().length - 1
+                              ? const Text('SUBMIT')
+                              : const Text('NEXT'),
+                        ),
+                        const SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: details.onStepCancel,
+                          child: currentStep == 0
+                              ? const Text('CANCEL')
+                              : const Text('BACK'),
+                        ),
+                      ],
+                    );
                   },
-                  child: Text(
-                    'Sign in!',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellow[600],
+                  type: StepperType.vertical,
+                  steps: getSteps(),
+                  currentStep: currentStep,
+                  onStepTapped: (value) {
+                    setState(() {
+                      currentStep = value;
+                    });
+                  },
+                  onStepContinue: () {
+                    if (currentStep != getSteps().length - 1 &&
+                        _formKeyList[currentStep].currentState!.validate()) {
+                      _formKeyList[currentStep].currentState!.save();
+                      setState(() {
+                        currentStep++;
+                      });
+                    } else if (currentStep == getSteps().length - 1 &&
+                        _formKeyList[currentStep].currentState!.validate()) {
+                      _formKeyList[currentStep].currentState!.save();
+                      print(
+                          '$_fName $_lName \n${_birthdate} \n$_city, $_state \n$_email $_password');
+                      userRegister();
+                      Navigator.pop(context);
+                    }
+                  },
+                  onStepCancel: () {
+                    if (currentStep != 0) {
+                      setState(() {
+                        currentStep--;
+                      });
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
+
+                // have an account already?
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    padding: const EdgeInsets.only(bottom: 100),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Have an account already?',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Sign in!',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.yellow[600],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                )
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -398,6 +411,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _buildPassword() {
     return TextFormField(
+      obscureText: true,
       controller: _passwordController,
       // The validator receives the text that the user has entered.
       validator: (value) {
@@ -426,6 +440,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _buildPasswordConfirmation() {
     return TextFormField(
+      obscureText: true,
       // The validator receives the text that the user has entered.
       validator: (value) {
         if (value != _passwordController.text) {
