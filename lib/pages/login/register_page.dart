@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/error/error_handling.dart';
+import 'package:playpal/service/form_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -100,102 +101,103 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 80.0),
-            child: Column(
-              children: [
-                Stepper(
-                  connectorThickness: 2.75,
-                  connectorColor:
-                      MaterialStatePropertyAll(Colors.amber.shade600),
-                  physics: const NeverScrollableScrollPhysics(),
-                  controlsBuilder:
-                      (BuildContext context, ControlsDetails details) {
-                    return Row(
-                      children: <Widget>[
-                        ElevatedButton(
-                          onPressed: details.onStepContinue,
-                          child: currentStep == getSteps().length - 1
-                              ? const Text('SUBMIT')
-                              : const Text('NEXT'),
-                        ),
-                        const SizedBox(width: 20),
-                        ElevatedButton(
-                          onPressed: details.onStepCancel,
-                          child: currentStep == 0
-                              ? const Text('CANCEL')
-                              : const Text('BACK'),
-                        ),
-                      ],
-                    );
-                  },
-                  type: StepperType.vertical,
-                  steps: getSteps(),
-                  currentStep: currentStep,
-                  onStepTapped: (value) {
-                    setState(() {
-                      currentStep = value;
-                    });
-                  },
-                  onStepContinue: () {
-                    if (currentStep != getSteps().length - 1 &&
-                        _formKeyList[currentStep].currentState!.validate()) {
-                      _formKeyList[currentStep].currentState!.save();
-                      setState(() {
-                        currentStep++;
-                      });
-                    } else if (currentStep == getSteps().length - 1 &&
-                        _formKeyList[currentStep].currentState!.validate()) {
-                      _formKeyList[currentStep].currentState!.save();
-                      print(
-                          '$_fName $_lName \n${_birthdate} \n$_city, $_state \n$_email $_password');
-                      userRegister();
-                      Navigator.pop(context);
-                    }
-                  },
-                  onStepCancel: () {
-                    if (currentStep != 0) {
-                      setState(() {
-                        currentStep--;
-                      });
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                ),
 
-                // have an account already?
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.bottomCenter,
-                    padding: const EdgeInsets.only(bottom: 100),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Have an account already?',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            'Sign in!',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.yellow[600],
-                            ),
-                          ),
-                        ),
-                      ],
+          SafeArea(
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              // padding: const EdgeInsets.only(bottom: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Have an account already?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                )
-              ],
+                  const SizedBox(width: 5),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Sign in!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.yellow[600],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 70.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Stepper(
+                    connectorThickness: 2.75,
+                    connectorColor:
+                        MaterialStatePropertyAll(Colors.amber.shade600),
+                    physics: const NeverScrollableScrollPhysics(),
+                    controlsBuilder:
+                        (BuildContext context, ControlsDetails details) {
+                      return Row(
+                        children: <Widget>[
+                          ElevatedButton(
+                            onPressed: details.onStepContinue,
+                            child: currentStep == getSteps().length - 1
+                                ? const Text('SUBMIT')
+                                : const Text('NEXT'),
+                          ),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: details.onStepCancel,
+                            child: currentStep == 0
+                                ? const Text('CANCEL')
+                                : const Text('BACK'),
+                          ),
+                        ],
+                      );
+                    },
+                    type: StepperType.vertical,
+                    steps: getSteps(),
+                    currentStep: currentStep,
+                    onStepTapped: (value) {
+                      setState(() {
+                        currentStep = value;
+                      });
+                    },
+                    onStepContinue: () {
+                      if (currentStep != getSteps().length - 1 &&
+                          _formKeyList[currentStep].currentState!.validate()) {
+                        _formKeyList[currentStep].currentState!.save();
+                        setState(() {
+                          currentStep++;
+                        });
+                      } else if (currentStep == getSteps().length - 1 &&
+                          _formKeyList[currentStep].currentState!.validate()) {
+                        _formKeyList[currentStep].currentState!.save();
+                        print(
+                            '$_fName $_lName \n${_birthdate} \n$_city, $_state \n$_email $_password');
+                        userRegister();
+                        Navigator.pop(context);
+                      }
+                    },
+                    onStepCancel: () {
+                      if (currentStep != 0) {
+                        setState(() {
+                          currentStep--;
+                        });
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -360,7 +362,7 @@ class _RegisterPageState extends State<RegisterPage> {
       // The validator receives the text that the user has entered.
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter a valid city';
+          return 'Please enter a valid state';
         }
         return null;
       },
@@ -382,12 +384,16 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  // build email text form field
   Widget _buildEmail() {
     return TextFormField(
       // The validator receives the text that the user has entered.
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter some text';
+        }
+        if (!FormService.emailRegEx.hasMatch(value)) {
+          return 'Invalid email. Please try again';
         }
         return null;
       },
@@ -409,18 +415,37 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  // build password text form field
   Widget _buildPassword() {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       obscureText: true,
       controller: _passwordController,
       // The validator receives the text that the user has entered.
       validator: (value) {
+        String errorCode = '';
         if (value == null || value.isEmpty) {
-          return 'Please enter some text';
+          return 'Please enter some text.';
         }
-        return null;
+        if (!FormService.passwordContainOneUpper.hasMatch(value)) {
+          errorCode += 'Missing contain one uppercase letter.\n';
+        }
+        if (!FormService.passwordContainOneLower.hasMatch(value)) {
+          errorCode += 'Missing contain one lowercase letter.\n';
+        }
+        if (!FormService.passwordContainOneNumber.hasMatch(value)) {
+          errorCode += 'Missing contain one number.\n';
+        }
+        if (value.length < 8) {
+          errorCode += 'Must at least be 8 characters.';
+        }
+        if (errorCode == '') {
+          return null;
+        }
+        return errorCode.trim();
       },
       decoration: const InputDecoration(
+        errorMaxLines: 3,
         fillColor: Colors.white,
         filled: true,
         focusedBorder: OutlineInputBorder(
