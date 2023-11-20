@@ -36,7 +36,6 @@ class _ChatBarState extends State<ChatBar> {
           children: [
             Expanded(
               child: Container(
-                height: 60,
                 child: ChatTextFormField(
                   controller: controller,
                   hintText: 'Message',

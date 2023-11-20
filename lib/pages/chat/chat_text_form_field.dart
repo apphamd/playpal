@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ChatTextFormField extends StatelessWidget {
   const ChatTextFormField({
@@ -22,26 +23,34 @@ class ChatTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-          labelText: labelText,
-          hintText: hintText,
-          prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
-          suffixIcon: suffixIcon == null
-              ? null
-              : IconButton(
-                  onPressed: onPressedSuffixIcon,
-                  icon: Icon(suffixIcon),
-                ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: Colors.amber),
-          )),
+    return Column(
+      children: [
+        TextFormField(
+          controller: controller,
+          onChanged: onChanged,
+          maxLength: 300,
+          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+          minLines: 1,
+          maxLines: 8,
+          decoration: InputDecoration(
+              labelText: labelText,
+              hintText: hintText,
+              prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
+              suffixIcon: suffixIcon == null
+                  ? null
+                  : IconButton(
+                      onPressed: onPressedSuffixIcon,
+                      icon: Icon(suffixIcon),
+                    ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: Colors.amber),
+              )),
+        ),
+      ],
     );
   }
 }
