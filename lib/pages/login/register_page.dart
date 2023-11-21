@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/error/error_handling.dart';
 import 'package:playpal/service/form_service.dart';
+import 'package:playpal/states/states_enum.dart' as UsStates;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -182,6 +183,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         _formKeyList[currentStep].currentState!.save();
                         print(
                             '$_fName $_lName \n${_birthdate} \n$_city, $_state \n$_email $_password');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text('Registering user...'),
+                          action: SnackBarAction(
+                            label: 'Dismiss',
+                            onPressed: () {
+                              // Some code to undo the change.
+                            },
+                          ),
+                        ));
                         userRegister();
                         Navigator.pop(context);
                       }
@@ -247,11 +257,13 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _locationFormKey,
             child: Column(
               children: [
-                const SizedBox(height: 5),
-                _buildCity(),
-                const SizedBox(height: 10),
-                _buildState(),
-                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    _buildCity(),
+                    const SizedBox(width: 10),
+                    _buildStates(),
+                  ],
+                )
               ],
             ),
           ),
@@ -331,56 +343,75 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _buildCity() {
-    return TextFormField(
-      // The validator receives the text that the user has entered.
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter a valid city';
-        }
-        return null;
-      },
-      decoration: const InputDecoration(
-        fillColor: Colors.white,
-        filled: true,
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.amber,
-            width: 2.0,
+    return SizedBox(
+      width: 200,
+      child: TextFormField(
+        // The validator receives the text that the user has entered.
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter a valid city';
+          }
+          return null;
+        },
+        decoration: const InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.amber,
+              width: 2.0,
+            ),
           ),
+          labelText: 'City',
+          border: OutlineInputBorder(),
         ),
-        labelText: 'City',
-        border: OutlineInputBorder(),
+        onSaved: (String? value) {
+          _city = value!;
+        },
       ),
-      onSaved: (String? value) {
-        _city = value!;
-      },
     );
   }
 
-  Widget _buildState() {
-    return TextFormField(
-      // The validator receives the text that the user has entered.
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter a valid state';
-        }
-        return null;
-      },
-      decoration: const InputDecoration(
-        fillColor: Colors.white,
-        filled: true,
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.amber,
-            width: 2.0,
+  Widget _buildStates() {
+    final List<DropdownMenuItem<UsStates.State>> statesEntries =
+        <DropdownMenuItem<UsStates.State>>[];
+    for (final UsStates.State state in UsStates.State.values) {
+      statesEntries.add(
+        DropdownMenuItem<UsStates.State>(value: state, child: Text(state.code)),
+      );
+    }
+
+    return Expanded(
+      child: DropdownButtonFormField(
+        menuMaxHeight: 200,
+        alignment: Alignment.center,
+        items: statesEntries,
+        onChanged: (value) {
+          print('You changed me!');
+          _state = value!.code;
+        },
+        onSaved: (value) {
+          _state = value!.code;
+        },
+        validator: (value) {
+          if (value == null) {
+            return 'Please enter a valid state';
+          }
+          return null;
+        },
+        decoration: const InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.amber,
+              width: 2.0,
+            ),
           ),
+          labelText: 'State',
+          border: OutlineInputBorder(),
         ),
-        labelText: 'State',
-        border: OutlineInputBorder(),
       ),
-      onSaved: (String? value) {
-        _state = value!;
-      },
     );
   }
 
