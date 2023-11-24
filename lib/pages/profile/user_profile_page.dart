@@ -151,7 +151,7 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
           // list of dogs
           // TODO: turn this into a instagram like card system
           Container(
-            padding: const EdgeInsets.only(top: 180),
+            padding: const EdgeInsets.only(top: 260),
             child: StreamBuilder(
               stream: dogs.snapshots(),
               builder: ((context, snapshot) {
@@ -214,60 +214,81 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                   return Column(
                     children: [
                       const SizedBox(height: 10),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: userDogs.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            child: ListTile(
-                              title: Text(userDogs[index].name),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DogProfilePage(
-                                        owner: _currentUser,
-                                        dog: userDogs[index]),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 20),
 
-                      // add dog button
-                      userDogs.length == 3
-                          ? Container()
-                          : Container(
-                              alignment: Alignment.center,
-                              width: 45,
-                              height: 45,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.indigoAccent.shade400,
-                                    width: 3),
-                                color: Colors.blue,
-                                shape: BoxShape.circle,
-                              ),
-                              child: IconButton(
-                                color: Colors.white,
-                                iconSize: 20,
-                                icon: const Icon(Icons.add),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AddDogPage(
-                                        user: _currentUser,
-                                        addDog: addDog,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
+                      // grid system for the doggies
+                      CustomScrollView(
+                        shrinkWrap: true,
+                        slivers: <Widget>[
+                          SliverGrid(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3),
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                return index == userDogs.length
+                                    ?
+                                    // add dog button
+                                    userDogs.length == 3
+                                        ? Container()
+                                        : Container(
+                                            alignment: Alignment.center,
+                                            width: 45,
+                                            height: 45,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors
+                                                      .indigoAccent.shade400,
+                                                  width: 2),
+                                              color: Colors
+                                                  .blue[100 * (index + 2)],
+                                            ),
+                                            child: IconButton(
+                                              color: Colors.amber,
+                                              iconSize: 70,
+                                              icon: const Icon(Icons.add),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AddDogPage(
+                                                      user: _currentUser,
+                                                      addDog: addDog,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          )
+                                    : GestureDetector(
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DogProfilePage(
+                                              dog: userDogs[index],
+                                              owner: _currentUser,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          color: Colors.blue[100 * (index + 1)],
+                                          child: Text(
+                                            userDogs[index].name,
+                                            style:
+                                                const TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      );
+                              },
+                              childCount: userDogs.length + 1,
                             ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 30),
                     ],
                   );
                 } else {

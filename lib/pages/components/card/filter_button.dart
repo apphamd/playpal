@@ -52,7 +52,8 @@ class _FilterButtonState extends State<FilterButton> {
     }
 
     return IconButton(
-        icon: const Icon(Icons.filter_alt, size: 30.0),
+        color: Colors.white,
+        icon: const Icon(Icons.filter_alt, size: 40.0),
         onPressed: () {
           showDialog<String>(
             context: context,
