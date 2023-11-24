@@ -102,7 +102,6 @@ class _HomeFeedState extends State<HomeFeed> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCurrentUserData();
   }
@@ -124,57 +123,57 @@ class _HomeFeedState extends State<HomeFeed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(45.0),
-        child: AppBar(
-          // this sets a transparent background for the app bar
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          title: Text(
-            'Location: ${_currentUser.city}, ${_currentUser.state}',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: const BoxDecoration(color: Colors.black87),
           ),
-
-          // filter button, must pass these controllers to filter results
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 6.0),
-            child: FilterButton(
-              test: testCallback,
-              energyLevelsDropdownController: _energyLevelsDropdownController,
-              weightComparisonDropdownController:
-                  _weightComparisonDropdownController,
-              weightTextController: _weightTextController,
-              ageComparisonDropdownController: _ageComparisonDropdownController,
-              ageTextController: _ageTextController,
-            ),
-          ),
-
-          // this is the gradient for the app bar
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.black38, Colors.transparent],
-              ),
-            ),
-          ),
-        ),
+          // SafeArea(
+          //   child: Container(
+          //     padding: const EdgeInsets.only(top: 100),
+          //     alignment: Alignment.topCenter,
+          //     child: const Text(
+          //       'woof.',
+          //       style: TextStyle(color: Colors.white),
+          //     ),
+          //   ),
+          // ),
+          _currentUser.dogs.isEmpty
+              ? const NoDogsUser()
+              : _queriedDogs.isEmpty
+                  ? const NoDogsInArea()
+                  : PageView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: _pageController,
+                      itemCount: _queriedDogs.length,
+                      itemBuilder: (context, index) {
+                        return DogCardPage(
+                          dog: _queriedDogs[index],
+                          currentUser: _currentUser,
+                        );
+                      },
+                    ),
+          _currentUser.dogs.isEmpty || _queriedDogs.isEmpty
+              ? const SizedBox()
+              : SafeArea(
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 10, right: 14.0),
+                    alignment: Alignment.topRight,
+                    child: FilterButton(
+                      test: testCallback,
+                      energyLevelsDropdownController:
+                          _energyLevelsDropdownController,
+                      weightComparisonDropdownController:
+                          _weightComparisonDropdownController,
+                      weightTextController: _weightTextController,
+                      ageComparisonDropdownController:
+                          _ageComparisonDropdownController,
+                      ageTextController: _ageTextController,
+                    ),
+                  ),
+                ),
+        ],
       ),
-      body: _currentUser.dogs.isEmpty
-          ? const NoDogs()
-          : PageView.builder(
-              scrollDirection: Axis.vertical,
-              controller: _pageController,
-              itemCount: _queriedDogs.length,
-              itemBuilder: (context, index) {
-                return DogCardPage(
-                  dog: _queriedDogs[index],
-                  currentUser: _currentUser,
-                );
-              },
-            ),
     );
   }
 }

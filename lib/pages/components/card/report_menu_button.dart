@@ -20,16 +20,6 @@ class _ReportMenuButtonState extends State<ReportMenuButton> {
 
   onSelectionChange() {
     // something else logic
-    // if (reasonController.text == 'Something else') {
-    //   setState(() {
-    //     somethingElse = true;
-    //   });
-    //   print(somethingElse);
-    // } else {
-    //   setState(() {
-    //     somethingElse = false;
-    //   });
-    // }
     print(reasonController.text);
   }
 
