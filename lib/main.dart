@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:playpal/pages/login/auth_page.dart';
-import 'package:playpal/pages/login/login_page.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -19,9 +19,24 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AuthPage(),
+      home: const AuthPage(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          secondary: Colors.amber,
+        ),
+        textTheme:
+            GoogleFonts.ibmPlexSansTextTheme(Theme.of(context).textTheme),
+        navigationBarTheme: const NavigationBarThemeData(
+          labelTextStyle: MaterialStatePropertyAll(
+            TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

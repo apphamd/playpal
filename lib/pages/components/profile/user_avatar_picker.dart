@@ -64,12 +64,12 @@ class _UserAvatarPickerState extends State<UserAvatarPicker> {
           children: <Widget>[
             profilePic.isNotEmpty
                 ? CircleAvatar(
-                    radius: 72,
+                    radius: 100,
                     backgroundImage: NetworkImage(profilePic),
                     backgroundColor: Colors.white,
                   )
                 : const CircleAvatar(
-                    radius: 72,
+                    radius: 100,
                     backgroundColor: Colors.grey,
                     // backgroundImage: NetworkImage(
                     //     "https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_account_circle_48px-1024.png"),

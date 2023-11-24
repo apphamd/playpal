@@ -4,6 +4,7 @@ import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/components/card/horizontal_mock_card.dart';
 import 'package:playpal/pages/components/card/like_button.dart';
+import 'package:playpal/pages/components/card/more_info_button.dart';
 import 'package:playpal/pages/components/card/report_menu_button.dart';
 import 'package:playpal/pages/components/profile/user_avatar.dart';
 import 'package:playpal/pages/screens/match_screen.dart';
@@ -160,7 +161,7 @@ class _DogCardPageState extends State<DogCardPage> {
           width: MediaQuery.of(context).size.width,
           child: Stack(
             children: [
-              // Card Image
+              // Image of dog
               StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('dogs')
@@ -175,7 +176,7 @@ class _DogCardPageState extends State<DogCardPage> {
                   if (dogData['profile_pic'] != null) {
                     return Container(
                       decoration: BoxDecoration(
-                        color: Colors.amber,
+                        color: Colors.grey,
                         image: DecorationImage(
                           image: NetworkImage(dogData['profile_pic']),
                           fit: BoxFit.fitHeight,
@@ -185,19 +186,114 @@ class _DogCardPageState extends State<DogCardPage> {
                   } else {
                     return Container(
                       decoration: const BoxDecoration(
-                        color: Colors.amber,
+                        color: Colors.grey,
                       ),
+                      child: const Center(child: CircularProgressIndicator()),
                     );
                   }
                 },
               ),
 
+              // top to mid gradient
+              SizedBox(
+                height: 500,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.center,
+                      colors: [Colors.black38, Colors.transparent],
+                    ),
+                  ),
+                ),
+              ),
+
+              // bottom to mid gradient
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.center,
+                    colors: [Colors.black38, Colors.transparent],
+                  ),
+                ),
+              ),
+
+              // Dog Info
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10.0, top: 15.0),
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.dog.name,
+                        style: const TextStyle(
+                          fontSize: 35.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 3.0),
+                        child: Text(
+                          '${widget.dog.breed}',
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // User Profile Circle
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.only(
+                    top: 40,
+                    right: 10.0,
+                  ),
+                  alignment: Alignment.centerRight,
+                  child: Stack(
+                    children: <Widget>[
+                      UserAvatar(
+                        userId: widget.dog.ownerId,
+                        radius: 25.0,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Like Button
+              Container(
+                padding: const EdgeInsets.only(right: 14.0, top: 240),
+                alignment: Alignment.centerRight,
+                child: LikeButton(
+                  isLiked: isLiked,
+                  onTap: toggleLike,
+                  size: 50.0,
+                ),
+              ),
+
+              // More info Button
+              Container(
+                padding: const EdgeInsets.only(right: 21.0, top: 360),
+                alignment: Alignment.centerRight,
+                child: MoreInfoButton(dog: widget.dog),
+              ),
+
               // More menu
               Container(
-                alignment: Alignment.topRight,
+                alignment: Alignment.centerRight,
                 padding: const EdgeInsets.only(
-                  top: 180.0,
-                  right: 35.0,
+                  top: 450.0,
+                  right: 20.0,
                 ),
                 child: MenuAnchor(
                   menuChildren: <Widget>[
@@ -216,124 +312,12 @@ class _DogCardPageState extends State<DogCardPage> {
                         }
                       },
                       icon: const Icon(
-                        Icons.more_vert,
+                        Icons.more_horiz,
                         size: 40,
                         color: Colors.white,
                       ),
                     );
                   },
-                ),
-              ),
-
-              // Dog Name
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(5.0),
-                    decoration: const BoxDecoration(
-                        color: Color.fromRGBO(255, 255, 255, 0.776),
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: Text(
-                      widget.dog.name,
-                      style: const TextStyle(
-                        fontSize: 35.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Breed
-              SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.only(top: 40.0, left: 20.0),
-                  child: Text(
-                    widget.dog.breed,
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-              ),
-
-              // energy level
-              SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.only(top: 65.0, left: 20.0),
-                  child: Text(
-                    '${widget.dog.energyLevel} energy',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-              ),
-
-              // location
-              SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.only(top: 85.0, left: 20.0),
-                  child: Text(
-                    '${widget.dog.city}, ${widget.dog.state}',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-              ),
-
-              // weight
-              SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.only(top: 105.0, left: 20.0),
-                  child: Text(
-                    '${widget.dog.weight.toString()} lbs',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-              ),
-
-              // age
-              SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.only(top: 125.0, left: 20.0),
-                  child: Text(
-                    '${widget.dog.age.toString()} ${widget.dog.ageTimespan}',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-              ),
-
-              // User Profile Circle
-              SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.only(top: 10.0, right: 20.0),
-                  alignment: Alignment.topRight,
-                  child: Stack(
-                    children: <Widget>[
-                      UserAvatar(
-                        userId: widget.dog.ownerId,
-                        radius: 35.0,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Like Button
-              Container(
-                padding: const EdgeInsets.only(right: 20.0, bottom: 20.0),
-                alignment: Alignment.bottomRight,
-                child: LikeButton(
-                  isLiked: isLiked,
-                  onTap: toggleLike,
-                  size: 50.0,
                 ),
               ),
             ],

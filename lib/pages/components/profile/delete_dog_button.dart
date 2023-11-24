@@ -19,7 +19,7 @@ class DeleteDogButton extends StatelessWidget {
       },
       style: const ButtonStyle(
           backgroundColor: MaterialStatePropertyAll(Colors.red)),
-      child: const Text('Delete???'),
+      child: const Text('Delete Dog?'),
     );
   }
 }

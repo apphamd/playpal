@@ -183,15 +183,17 @@ class _RegisterPageState extends State<RegisterPage> {
                         _formKeyList[currentStep].currentState!.save();
                         print(
                             '$_fName $_lName \n${_birthdate} \n$_city, $_state \n$_email $_password');
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Text('Registering user...'),
-                          action: SnackBarAction(
-                            label: 'Dismiss',
-                            onPressed: () {
-                              // Some code to undo the change.
-                            },
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Registering user...'),
+                            action: SnackBarAction(
+                              label: 'Dismiss',
+                              onPressed: () {
+                                // Some code to undo the change.
+                              },
+                            ),
                           ),
-                        ));
+                        );
                         userRegister();
                         Navigator.pop(context);
                       }
