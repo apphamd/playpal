@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:playpal/crud/enum/enum.dart' hide EnergyLevel;
+import 'package:playpal/enum/enum.dart' hide EnergyLevel;
 import 'package:playpal/models/dog_model.dart';
 
 class FilterButton extends StatefulWidget {
