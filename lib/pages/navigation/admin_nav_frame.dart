@@ -42,6 +42,7 @@ class _AdminNavigationFrameState extends State<AdminNavigationFrame> {
     }
     return Scaffold(
       bottomNavigationBar: NavigationBar(
+        backgroundColor: Colors.indigo[900],
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
@@ -51,18 +52,36 @@ class _AdminNavigationFrameState extends State<AdminNavigationFrame> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.report),
-            icon: Icon(Icons.report),
+            selectedIcon: Icon(
+              Icons.report,
+              color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.report,
+              color: Colors.white,
+            ),
             label: 'Reports',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.supervised_user_circle),
-            icon: Icon(Icons.supervised_user_circle),
+            selectedIcon: Icon(
+              Icons.supervised_user_circle,
+              color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.supervised_user_circle,
+              color: Colors.white,
+            ),
             label: 'Users',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.admin_panel_settings),
-            icon: Icon(Icons.admin_panel_settings),
+            selectedIcon: Icon(
+              Icons.admin_panel_settings,
+              color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.admin_panel_settings,
+              color: Colors.white,
+            ),
             label: 'Profile',
           ),
         ],
