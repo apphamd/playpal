@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:playpal/pages/components/profile/logout_button.dart';
+import 'package:playpal/pages/components/profile/user_more_menu_button.dart';
 import 'package:playpal/pages/profile/add_dog_page.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';
-import 'package:playpal/pages/components/user_avatar_picker.dart';
+import 'package:playpal/pages/components/profile/user_avatar_picker.dart';
 import 'package:playpal/pages/profile/dog_profile_page.dart';
 
 class CurrentUserProfilePage extends StatefulWidget {
-  const CurrentUserProfilePage({super.key, required this.currentUser});
-  final UserModel currentUser;
+  const CurrentUserProfilePage({super.key});
 
   @override
   State<CurrentUserProfilePage> createState() => _CurrentUserProfilePageState();
@@ -17,29 +18,68 @@ class CurrentUserProfilePage extends StatefulWidget {
 
 class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
   final dogs = FirebaseFirestore.instance.collection('dogs');
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> _userDogs = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void userSignOut() {
-    FirebaseAuth.instance.signOut();
+  // user
+  final userAuth = FirebaseAuth.instance.currentUser!;
+  UserModel _currentUser = UserModel.mockUser();
+
+  Future getCurrentUserData() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userAuth.uid)
+        .get()
+        .then((docSnapshot) {
+      UserModel currentUser = UserModel.fromFirestore(docSnapshot);
+      setState(() {
+        _currentUser = currentUser;
+      });
+    });
   }
 
-  Future getDogs() async {
-    _userDogs = [];
-    await dogs.get().then((snapshot) => snapshot.docs.forEach((document) {
-          if (document.data()['owner_id'] == widget.currentUser.userId) {
-            _userDogs.add(document);
-          }
-        }));
+  void setCurrentUserData(UserModel updatedUser) {
+    setState(() {
+      _currentUser = updatedUser;
+    });
+  }
+
+  void addDog(String dogId) {
+    List dogsList = _currentUser.dogs;
+    if (!dogsList.contains(dogId)) {
+      print(dogId);
+      dogsList.add(dogId);
+    }
+    setState(() {
+      _currentUser = UserModel(
+        firstName: _currentUser.firstName,
+        lastName: _currentUser.lastName,
+        city: _currentUser.city,
+        state: _currentUser.state,
+        dogs: dogsList,
+        likes: _currentUser.likes,
+        birthday: _currentUser.birthday,
+        profilePic: _currentUser.profilePic,
+        userId: _currentUser.userId,
+      );
+    });
+    print(_currentUser.dogs);
+  }
+
+  userSignOut() {
+    print('You clicked me!');
+    FirebaseAuth.instance.signOut();
   }
 
   @override
   void initState() {
+    getCurrentUserData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 100,
@@ -58,29 +98,34 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // User's name
                 Text(
-                  '${widget.currentUser.firstName} ${widget.currentUser.lastName}',
+                  '${_currentUser.firstName} ${_currentUser.lastName}',
                   style: const TextStyle(
-                    fontSize: 30,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
-                // const Spacer(),
-                IconButton(
-                    onPressed: userSignOut,
-                    icon: const Icon(
-                      Icons.logout,
-                      color: Colors.black,
-                    ))
+                const Spacer(),
+
+                // Settings menu
+                UserMenuMoreButton(
+                  currentUser: _currentUser,
+                  updateUser: setCurrentUserData,
+                ),
+
+                // Logout button
+                LogoutButton(userSignOut: userSignOut),
               ],
             ),
             Text(
-              '\t${widget.currentUser.city}, ${widget.currentUser.state}',
+              _currentUser.userId == ''
+                  ? ''
+                  : '${_currentUser.city}, ${_currentUser.state}',
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.black,
               ),
             ),
@@ -92,111 +137,163 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
           Container(
             alignment: Alignment.topCenter,
             padding: const EdgeInsets.only(top: 20),
-            child: UserAvatarPicker(
-              currentUser: widget.currentUser,
-            ),
+            child: _currentUser.userId == ''
+                ? const CircleAvatar(
+                    radius: 72,
+                    backgroundColor: Colors.white,
+                    child: CircularProgressIndicator(),
+                  )
+                : UserAvatarPicker(
+                    currentUser: _currentUser,
+                  ),
           ),
 
           // list of dogs
           // TODO: turn this into a instagram like card system
           Container(
-            padding: const EdgeInsets.only(top: 180),
-            child: FutureBuilder(
-              future: getDogs(),
+            padding: const EdgeInsets.only(top: 260),
+            child: StreamBuilder(
+              stream: dogs.snapshots(),
               builder: ((context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (_userDogs.isEmpty) {
-                  return Column(
-                    children: [
-                      const SizedBox(height: 50),
-                      const Center(
-                          child: Text('Uh oh, where are your buddies at?')),
-                      const SizedBox(height: 50),
-                      Container(
-                        alignment: Alignment.center,
-                        width: 45,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.indigoAccent.shade400, width: 3),
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          color: Colors.white,
-                          iconSize: 20,
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AddDogPage(user: widget.currentUser),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                return Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _userDogs.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: ListTile(
-                            title: Text(_userDogs[index]['f_name']),
-                            onTap: () {
+
+                if (snapshot.hasData) {
+                  List<DogModel> userDogs = [];
+
+                  if (snapshot.data != null) {
+                    for (var doc in snapshot.data!.docs) {
+                      Map dogData = doc.data();
+                      if (dogData['owner_id'] == _currentUser.userId) {
+                        userDogs.add(DogModel.fromFirestore(doc));
+                      }
+                    }
+                  }
+
+                  // no dogs
+                  if (userDogs.isEmpty) {
+                    return Column(
+                      children: [
+                        const SizedBox(height: 50),
+                        const Center(
+                            child: Text('Uh oh, where are your buddies at?')),
+                        const SizedBox(height: 50),
+                        Container(
+                          alignment: Alignment.center,
+                          width: 45,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.indigoAccent.shade400, width: 3),
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            color: Colors.white,
+                            iconSize: 20,
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => DogProfilePage(
-                                      owner: widget.currentUser,
-                                      dog: DogModel.fromFirestore(
-                                          _userDogs[index])),
+                                  builder: (context) => AddDogPage(
+                                    user: _currentUser,
+                                    addDog: addDog,
+                                  ),
                                 ),
                               );
                             },
                           ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
+                        ),
+                      ],
+                    );
+                  }
 
-                    // add dog button
-                    Container(
-                      alignment: Alignment.center,
-                      width: 45,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.indigoAccent.shade400, width: 3),
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        color: Colors.white,
-                        iconSize: 20,
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  AddDogPage(user: widget.currentUser),
+                  // has dogs
+                  return Column(
+                    children: [
+                      const SizedBox(height: 10),
+
+                      // grid system for the doggies
+                      CustomScrollView(
+                        shrinkWrap: true,
+                        slivers: <Widget>[
+                          SliverGrid(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3),
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                return index == userDogs.length
+                                    ?
+                                    // add dog button
+                                    userDogs.length == 3
+                                        ? Container()
+                                        : Container(
+                                            alignment: Alignment.center,
+                                            width: 45,
+                                            height: 45,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors
+                                                      .indigoAccent.shade400,
+                                                  width: 2),
+                                              color: Colors
+                                                  .blue[100 * (index + 2)],
+                                            ),
+                                            child: IconButton(
+                                              color: Colors.amber,
+                                              iconSize: 70,
+                                              icon: const Icon(Icons.add),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AddDogPage(
+                                                      user: _currentUser,
+                                                      addDog: addDog,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          )
+                                    : GestureDetector(
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DogProfilePage(
+                                              dog: userDogs[index],
+                                              owner: _currentUser,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          color: Colors.blue[100 * (index + 1)],
+                                          child: Text(
+                                            userDogs[index].name,
+                                            style:
+                                                const TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      );
+                              },
+                              childCount: userDogs.length + 1,
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                );
+
+                      const SizedBox(height: 30),
+                    ],
+                  );
+                } else {
+                  return const Center(child: Text('An error has occurred'));
+                }
               }),
             ),
           ),

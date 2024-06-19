@@ -36,7 +36,6 @@ class _ChatBarState extends State<ChatBar> {
           children: [
             Expanded(
               child: Container(
-                height: 60,
                 child: ChatTextFormField(
                   controller: controller,
                   hintText: 'Message',
@@ -60,7 +59,7 @@ class _ChatBarState extends State<ChatBar> {
 
   Future<void> _sendMessage(BuildContext context) async {
     if (controller.text.isNotEmpty) {
-      await MessageCrud.createMessage(
+      await MessageService.createMessage(
         content: controller.text,
         senderId: widget.currentUser.userId,
         recipientId: widget.recipient.userId,

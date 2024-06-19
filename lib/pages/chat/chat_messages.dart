@@ -26,7 +26,7 @@ class _ChatMessagesState extends State<ChatMessages> {
   Widget build(BuildContext context) {
     return Expanded(
       child: StreamBuilder(
-          stream: MessageCrud.getMessages(
+          stream: MessageService.getMessages(
             widget.currentUser.userId,
             widget.recipient.userId,
           ),

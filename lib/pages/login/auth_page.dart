@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/pages/navigation/nav_frame.dart';
+import 'package:playpal/pages/login/user_or_admin.dart';
 import 'package:playpal/pages/login/login_page.dart';
 
 class AuthPage extends StatelessWidget {
@@ -14,7 +14,7 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           // user logged in
           if (snapshot.hasData) {
-            return const NavigationFrame();
+            return const UserOrAdmin();
           }
 
           // user not logged in

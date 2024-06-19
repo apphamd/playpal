@@ -22,11 +22,14 @@ class _EditDogPageState extends State<EditDogPage> {
 
   // dog fields
   String dogName = '';
+  String gender = '';
   String breed = '';
   String energyLevel = '';
   int weight = 0;
   int age = 0;
   String ageTimespan = '';
+  bool vaccinated = false;
+  bool fixed = false;
 
   void submitForm() {
     if (context.mounted) FocusScope.of(context).unfocus();
@@ -36,11 +39,14 @@ class _EditDogPageState extends State<EditDogPage> {
       widget.dog.dogId,
       widget.user,
       dogName,
+      gender,
       breed,
       energyLevel,
       weight,
       age,
       ageTimespan,
+      vaccinated,
+      fixed,
     );
   }
 

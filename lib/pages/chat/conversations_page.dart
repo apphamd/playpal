@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/chat/chat_page.dart';
-import 'package:playpal/pages/components/user_avatar.dart';
+import 'package:playpal/pages/chat/delete_match_button.dart';
+import 'package:playpal/pages/components/profile/user_avatar.dart';
 
 class ConversationsPage extends StatefulWidget {
   const ConversationsPage({
@@ -62,9 +63,8 @@ class _ConversationsPageState extends State<ConversationsPage> {
             // create a list of ids from matches.
             List matchIdList = [];
             for (var doc in snapshot.data!.docs) {
-              var data = doc.data();
-              if (!matchIdList.contains(data['matched_user_id'])) {
-                matchIdList.add(data['matched_user_id']);
+              if (!matchIdList.contains(doc.id)) {
+                matchIdList.add(doc.id);
               }
             }
 
@@ -84,7 +84,6 @@ class _ConversationsPageState extends State<ConversationsPage> {
                   List<UserModel> matchedUsersList = [];
                   for (var doc in snapshot.data!.docs) {
                     for (var id in matchIdList) {
-                      print(doc.data());
                       UserModel user = UserModel.fromFirestore(doc);
                       if (id == doc.id && !matchedUsersList.contains(user)) {
                         matchedUsersList.add(user);
@@ -110,6 +109,10 @@ class _ConversationsPageState extends State<ConversationsPage> {
                             leading: UserAvatar(
                               userId: matchedUsersList[index].userId,
                               radius: 30.0,
+                            ),
+                            trailing: DeleteMatchButton(
+                              currentUserId: widget.currentUser.userId,
+                              recipientId: matchedUsersList[index].userId,
                             ),
                             horizontalTitleGap: 0,
                             title: Text('${matchedUsersList[index].firstName} '

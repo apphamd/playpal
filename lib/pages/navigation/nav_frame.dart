@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
 import 'package:playpal/pages/chat/conversations_page.dart';
 import 'package:playpal/pages/home/home_feed.dart';
-import 'package:playpal/pages/home/home_feed_mock.dart';
 import 'package:playpal/pages/profile/user_profile_page.dart';
 import 'package:playpal/models/user_model.dart';
 
@@ -19,7 +18,7 @@ class _NavigationFrameState extends State<NavigationFrame> {
   final db = FirebaseFirestore.instance;
   UserModel? _currentUser;
 
-  int currentPageIndex = 0;
+  int currentPageIndex = 1;
 
   Future getCurrentUserData() async {
     await db.collection('users').doc(userAuth.uid).get().then((docSnapshot) {
@@ -39,41 +38,93 @@ class _NavigationFrameState extends State<NavigationFrame> {
   @override
   Widget build(BuildContext context) {
     if (_currentUser?.userId == null) {
-      return const Text('loading...');
+      return const Center(child: CircularProgressIndicator());
     }
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        indicatorColor: Colors.amber[800],
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home),
-            label: 'Home',
+      // extendBody: true,
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Colors.black54, width: 0.2),
           ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.message_outlined),
-            icon: Icon(Icons.message_outlined),
-            label: 'Messages',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.account_circle_outlined),
-            icon: Icon(Icons.account_circle_outlined),
-            label: 'Profile',
-          ),
-        ],
+        ),
+        child: NavigationBar(
+          backgroundColor: Colors.indigo[900],
+          height: 60,
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          indicatorColor: Colors.transparent,
+          selectedIndex: currentPageIndex,
+          destinations: <Widget>[
+            // inbox icon
+            NavigationDestination(
+              selectedIcon: Container(
+                padding: const EdgeInsets.only(top: 30),
+                child: const Icon(
+                  Icons.message,
+                  size: 25,
+                  color: Colors.amber,
+                ),
+              ),
+              icon: Container(
+                padding: const EdgeInsets.only(top: 30),
+                child: const Icon(
+                  Icons.message_outlined,
+                  size: 25,
+                  color: Colors.white70,
+                ),
+              ),
+              label: 'Inbox',
+            ),
+
+            // home icon
+            NavigationDestination(
+              selectedIcon: Container(
+                padding: const EdgeInsets.only(top: 20),
+                child: const Icon(
+                  Icons.home,
+                  size: 50,
+                  color: Colors.amber,
+                ),
+              ),
+              icon: Container(
+                padding: const EdgeInsets.only(top: 20),
+                child: const Icon(
+                  Icons.home_outlined,
+                  size: 50,
+                  color: Colors.white70,
+                ),
+              ),
+              label: '',
+            ),
+
+            // profile icon
+            NavigationDestination(
+              selectedIcon: Container(
+                padding: const EdgeInsets.only(top: 30),
+                child: const Icon(
+                  Icons.account_circle,
+                  color: Colors.amber,
+                  size: 30,
+                ),
+              ),
+              icon: Container(
+                padding: const EdgeInsets.only(top: 30),
+                child: const Icon(
+                  Icons.account_circle_outlined,
+                  color: Colors.white70,
+                  size: 30,
+                ),
+              ),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
       body: <Widget>[
-        Container(
-          color: Colors.blue,
-          alignment: Alignment.center,
-          child: HomeFeed(user: _currentUser!),
-        ),
         Container(
           color: Colors.green,
           alignment: Alignment.center,
@@ -82,10 +133,13 @@ class _NavigationFrameState extends State<NavigationFrame> {
           ),
         ),
         Container(
+          color: Colors.blue,
           alignment: Alignment.center,
-          child: CurrentUserProfilePage(
-            currentUser: _currentUser!,
-          ),
+          child: const HomeFeed(),
+        ),
+        Container(
+          alignment: Alignment.center,
+          child: const CurrentUserProfilePage(),
         ),
       ][currentPageIndex],
     );

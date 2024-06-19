@@ -3,21 +3,22 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/service/image_service.dart';
 
-class DogProfileImagePicker extends StatefulWidget {
-  const DogProfileImagePicker({
+class DogAvatar extends StatefulWidget {
+  const DogAvatar({
     super.key,
-    required this.dog,
+    required this.dogId,
+    required this.radius,
   });
-  final DogModel dog;
+  final String dogId;
+  final double radius;
 
   @override
-  State<DogProfileImagePicker> createState() => _DogProfileImagePickerState();
+  State<DogAvatar> createState() => _DogAvatarState();
 }
 
-class _DogProfileImagePickerState extends State<DogProfileImagePicker> {
+class _DogAvatarState extends State<DogAvatar> {
   Uint8List? _image;
   Map<String, dynamic> dogData = {};
   CollectionReference dogs = FirebaseFirestore.instance.collection('dogs');
@@ -32,7 +33,7 @@ class _DogProfileImagePickerState extends State<DogProfileImagePicker> {
 
   void saveDogProfilePicture() async {
     await ImageService.saveDogProfilePicData(
-      dogId: widget.dog.dogId,
+      dogId: widget.dogId,
       file: _image!,
     );
   }
@@ -51,7 +52,7 @@ class _DogProfileImagePickerState extends State<DogProfileImagePicker> {
           String profilePic = '';
           if (snapshot.hasData) {
             for (var dog in snapshot.data!.docs) {
-              if (widget.dog.dogId == dog.id) {
+              if (widget.dogId == dog.id) {
                 currentDog = dog.data() as Map;
               }
             }
@@ -64,27 +65,16 @@ class _DogProfileImagePickerState extends State<DogProfileImagePicker> {
             children: <Widget>[
               profilePic.isNotEmpty
                   ? CircleAvatar(
-                      radius: 72,
+                      radius: widget.radius,
                       backgroundImage: NetworkImage(profilePic),
                       backgroundColor: Colors.white,
                     )
-                  : const CircleAvatar(
-                      radius: 72,
+                  : CircleAvatar(
+                      radius: widget.radius,
                       backgroundColor: Colors.grey,
                       // backgroundImage: NetworkImage(
                       //     "https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_account_circle_48px-1024.png"),
                     ),
-              Positioned(
-                bottom: 0,
-                right: 7,
-                child: IconButton(
-                  onPressed: selectImage,
-                  icon: Icon(
-                    Icons.add_a_photo,
-                    color: Colors.amber[600],
-                  ),
-                ),
-              )
             ],
           );
         });

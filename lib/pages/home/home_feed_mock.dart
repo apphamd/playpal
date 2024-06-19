@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/crud/enum/enum.dart';
+import 'package:playpal/enum/enum.dart';
 import 'package:playpal/crud/query/filter_dogs.dart';
 
 class HomeFeedMock extends StatefulWidget {
@@ -67,10 +67,10 @@ class _HomeFeedMockState extends State<HomeFeedMock> {
     TextEditingController weight,
   ) {
     setState(() {
-      _queriedDogs = FilterDogs.filterByEnergyLevel(energyLevel, _queriedDogs);
-      _queriedDogs = FilterDogs.filterByCity(city, _queriedDogs);
-      _queriedDogs =
-          FilterDogs.filterByWeight(comparison, weight, _queriedDogs);
+      // _queriedDogs = FilterDogs.filterByEnergyLevel(energyLevel, _queriedDogs);
+      // _queriedDogs = FilterDogs.filterByCity(city, _queriedDogs);
+      // _queriedDogs =
+      // FilterDogs.filterByWeight(comparison, weight, _queriedDogs);
     });
   }
 
