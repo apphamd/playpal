@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:playpal/crud/enum/enum.dart';
+import 'package:playpal/enum/enum.dart';
 import 'package:playpal/crud/query/filter_dogs.dart';
 
 class HomeFeedMock extends StatefulWidget {

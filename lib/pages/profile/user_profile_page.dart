@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:playpal/pages/components/profile/logout_button.dart';
 import 'package:playpal/pages/components/profile/user_more_menu_button.dart';
 import 'package:playpal/pages/profile/add_dog_page.dart';
 import 'package:playpal/models/dog_model.dart';
@@ -64,7 +65,8 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
     print(_currentUser.dogs);
   }
 
-  void userSignOut() {
+  userSignOut() {
+    print('You clicked me!');
     FirebaseAuth.instance.signOut();
   }
 
@@ -107,17 +109,15 @@ class _CurrentUserProfilePageState extends State<CurrentUserProfilePage> {
                   ),
                 ),
                 const Spacer(),
+
+                // Settings menu
                 UserMenuMoreButton(
                   currentUser: _currentUser,
                   updateUser: setCurrentUserData,
                 ),
-                IconButton(
-                  onPressed: userSignOut,
-                  icon: const Icon(
-                    Icons.logout,
-                    color: Colors.black,
-                  ),
-                ),
+
+                // Logout button
+                LogoutButton(userSignOut: userSignOut),
               ],
             ),
             Text(

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:playpal/pages/components/card/report_menu_button.dart';
-import 'package:playpal/pages/components/profile/user_more_menu_button.dart';
-import 'package:playpal/service/message_service.dart';
-import 'package:playpal/models/message_model.dart';
 import 'package:playpal/models/user_model.dart';
 import 'package:playpal/pages/chat/chat_bar.dart';
 import 'package:playpal/pages/chat/chat_messages.dart';
