@@ -128,16 +128,6 @@ class _HomeFeedState extends State<HomeFeed> {
           Container(
             decoration: const BoxDecoration(color: Colors.black87),
           ),
-          // SafeArea(
-          //   child: Container(
-          //     padding: const EdgeInsets.only(top: 100),
-          //     alignment: Alignment.topCenter,
-          //     child: const Text(
-          //       'woof.',
-          //       style: TextStyle(color: Colors.white),
-          //     ),
-          //   ),
-          // ),
           _currentUser.dogs.isEmpty
               ? const NoDogsUser()
               : _queriedDogs.isEmpty

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:playpal/models/dog_model.dart';
 import 'package:playpal/models/user_model.dart';

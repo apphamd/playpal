@@ -17,24 +17,15 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -52,12 +43,39 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBNFv0k3lI78TfBzTqHydhBCx6INtpBOT0',
+    appId: '1:22477571679:web:4c7e21a425a5064ea97dea',
+    messagingSenderId: '22477571679',
+    projectId: 'playpal-5c3dc',
+    authDomain: 'playpal-5c3dc.firebaseapp.com',
+    storageBucket: 'playpal-5c3dc.appspot.com',
+    measurementId: 'G-YS1FK70RSW',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyCOhBlkdN9Il63ppchLnMtbW8-Tjp_nUFU',
+    appId: '1:22477571679:android:a8f30efaf0302bdda97dea',
+    messagingSenderId: '22477571679',
+    projectId: 'playpal-5c3dc',
+    storageBucket: 'playpal-5c3dc.appspot.com',
+  );
+
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB4x0AxQeCnJuTnBaRxGY9K8_z00RxMNks',
-    appId: '1:181801822379:ios:245b6ff5fd78687269afee',
-    messagingSenderId: '181801822379',
-    projectId: 'playpal-21923',
-    storageBucket: 'playpal-21923.appspot.com',
-    iosBundleId: 'com.albertphamcs',
+    apiKey: 'AIzaSyBhva76rUc4IjzgEFYjUtRmNWijLU0sEws',
+    appId: '1:22477571679:ios:8ab8eb5173c92f82a97dea',
+    messagingSenderId: '22477571679',
+    projectId: 'playpal-5c3dc',
+    storageBucket: 'playpal-5c3dc.appspot.com',
+    iosBundleId: 'com.albertphamcs.playpal',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBhva76rUc4IjzgEFYjUtRmNWijLU0sEws',
+    appId: '1:22477571679:ios:64f7e505c6ae1835a97dea',
+    messagingSenderId: '22477571679',
+    projectId: 'playpal-5c3dc',
+    storageBucket: 'playpal-5c3dc.appspot.com',
+    iosBundleId: 'com.example.playpal.RunnerTests',
   );
 }
