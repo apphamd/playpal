@@ -38,6 +38,7 @@ class _NavigationFrameState extends State<NavigationFrame> {
   @override
   Widget build(BuildContext context) {
     if (_currentUser?.userId == null) {
+      // return LoginPage();
       return const Center(child: CircularProgressIndicator());
     }
     return Scaffold(

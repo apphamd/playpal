@@ -293,7 +293,7 @@ class _DogCardPageState extends State<DogCardPage> {
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.only(
                   top: 450.0,
-                  right: 20.0,
+                  right: 12.0,
                 ),
                 child: MenuAnchor(
                   menuChildren: <Widget>[

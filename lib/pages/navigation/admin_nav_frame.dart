@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/material.dart';
+import 'package:playpal/pages/admin/console_page.dart';
 import 'package:playpal/pages/admin/reports_feed.dart';
 import 'package:playpal/pages/chat/conversations_page.dart';
 import 'package:playpal/pages/profile/user_profile_page.dart';
@@ -82,6 +83,17 @@ class _AdminNavigationFrameState extends State<AdminNavigationFrame> {
               Icons.admin_panel_settings,
               color: Colors.white,
             ),
+            label: 'Console',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(
+              Icons.admin_panel_settings,
+              color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.admin_panel_settings,
+              color: Colors.white,
+            ),
             label: 'Profile',
           ),
         ],
@@ -99,6 +111,10 @@ class _AdminNavigationFrameState extends State<AdminNavigationFrame> {
             currentUser: _currentUser!,
           ),
         ),
+        Container(
+            color: Colors.orange,
+            alignment: Alignment.center,
+            child: const AdminConsolePage()),
         Container(
           alignment: Alignment.center,
           child: const CurrentUserProfilePage(),

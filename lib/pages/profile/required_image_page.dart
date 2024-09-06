@@ -3,9 +3,6 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:playpal/models/dog_model.dart';
-import 'package:playpal/pages/components/profile/dog_profile_image_picker.dart';
-import 'package:playpal/pages/profile/user_profile_page.dart';
 import 'package:playpal/service/image_service.dart';
 
 class RequiredImagePage extends StatefulWidget {
